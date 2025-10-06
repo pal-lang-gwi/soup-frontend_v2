@@ -1,3 +1,8 @@
+$white: #ffffff;
+$green-neon: #e1faab;
+$green-mute: #eaf0dd;
+$green-dark: #cee49f;
+
 $gradient1: radial-gradient(
   ellipse at 70% 60%,
   rgba(240, 255, 209, 0.4) 10%,
@@ -5,3 +10,21 @@ $gradient1: radial-gradient(
   rgba(240, 255, 209, 0) 40%
 );
 
+:root {
+  --color-white: #{$white};
+
+  --color-green-neon: #{$green-neon};
+  --color-green-mute: #{$green-mute};
+  --color-green-dark: #{$green-dark};
+
+  --gradient1: #{$gradient1};
+
+  --btn1-bg: var(--color-white);
+  --btn1-border: var(--color-green-mute);
+
+  --btn2-bg: linear-gradient(180deg, var(--color-green-neon) 0%, var(--color-white) 100%);
+  --btn2-border: var(--color-green-neon);
+
+  --btn3-bg: var(--color-green-dark);
+  --btn3-border: #c2d597;
+}
