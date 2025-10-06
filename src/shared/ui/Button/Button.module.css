@@ -1,0 +1,65 @@
+@import '../../styles/color.scss';
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  border-width: 2px;
+  border-style: solid;
+  transition: all 0.2s ease-in-out;
+
+  font-family: inherit;
+  line-height: 1;
+
+  &--xs {
+    width: 80px;
+    height: 30px;
+    font-size: 16px;
+  }
+
+  &--s {
+    width: 100px;
+    height: 45px;
+    font-size: 18px;
+  }
+
+  &--m {
+    width: 140px;
+    height: 45px;
+    font-size: 18px;
+  }
+
+  &--l {
+    width: 160px;
+    height: 45px;
+    font-size: 18px;
+  }
+
+  &--type1 {
+    background: var(--btn1-bg);
+    border-color: var(--btn1-border);
+    color: var(--color-green-mute);
+  }
+
+  &--type2 {
+    background: var(--btn2-bg);
+    border-color: var(--btn2-border);
+    color: var(--color-white);
+  }
+
+  &--type3 {
+    background: var(--btn3-bg);
+    border-color: var(--btn3-border);
+    color: var(--color-white);
+  }
+
+  &--close {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    font-size: 16px;
+  }
+}
