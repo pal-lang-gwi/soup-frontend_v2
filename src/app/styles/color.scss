@@ -1,4 +1,6 @@
 $white: #ffffff;
+$light-grey: #909090;
+$black: #000000;
 $green-neon: #e1faab;
 $green-mute: #eaf0dd;
 $green-dark: #cee49f;
@@ -12,6 +14,8 @@ $gradient1: radial-gradient(
 
 :root {
   --color-white: #{$white};
+  --color-light-grey: #{$light-grey};
+  --color-black: #{$black};
 
   --color-green-neon: #{$green-neon};
   --color-green-mute: #{$green-mute};
