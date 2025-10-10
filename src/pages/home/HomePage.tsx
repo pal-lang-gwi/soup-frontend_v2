@@ -1,5 +1,6 @@
 import styles from './HomePage.module.scss'
 import { Button } from '@/shared/ui/Button/Button'
+import { Input } from '@/shared/ui/Input/Input'
 import mailImg from '@/shared/assets/mail.png'
 
 const HomePage = () => {
@@ -51,9 +52,7 @@ const HomePage = () => {
           테슬라
         </Button>
       </div>
-
-      {/* 검색창 */}
-      <div className={styles.searchBar}></div>
+      <Input />
     </div>
   )
 }
