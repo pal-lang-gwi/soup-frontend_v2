@@ -2,10 +2,12 @@ import styles from './HomePage.module.scss'
 import { Button } from '@/shared/ui/Button/Button'
 import { Input } from '@/shared/ui/Input/Input'
 import mailImg from '@/shared/assets/mail.png'
+import { NavBarLoggedIn } from '@/widgets/NavBar/NavBarLoggedIn'
 
 const HomePage = () => {
   return (
     <div className={styles.root}>
+      <NavBarLoggedIn />
       <div className={styles.hero}>
         <img src={mailImg} className={styles.titleIcon} alt='mail_img' />
         <div className={styles.container}>

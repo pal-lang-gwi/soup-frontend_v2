@@ -1,10 +1,12 @@
 import styles from './LandingPage.module.scss'
 import { Input } from '@/shared/ui/Input/Input'
 import mailImg from '@/shared/assets/mail.png'
+import { NavBarLoggedOut } from '@/widgets/NavBar/NavBarLoggedOut'
 
 const LandingPage = () => {
   return (
     <div className={styles.root}>
+      <NavBarLoggedOut />
       <div className={styles.hero}>
         <img src={mailImg} className={styles.titleIcon} alt='mail_img' />
         <div className={styles.container}>
