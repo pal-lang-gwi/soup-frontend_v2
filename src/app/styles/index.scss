@@ -1,0 +1,12 @@
+@use './color.scss' as color;
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: 'Pretendard', sans-serif;
+  color: #000;
+  background: color.$gradient1;
+}

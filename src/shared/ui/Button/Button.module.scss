@@ -1,0 +1,56 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-radius: 30px;
+  font-weight: 400;
+  cursor: pointer;
+  border-width: 3px;
+  border-style: solid;
+  font-family: inherit;
+
+  padding: 0 12px;
+
+  &--xs {
+    height: 30px;
+    font-size: 14px;
+  }
+
+  &--s {
+    height: 40px;
+    font-size: 16px;
+  }
+
+  &--m {
+    height: 45px;
+    font-size: 18px;
+  }
+
+  &--l {
+    height: 45px;
+    font-size: 18px;
+  }
+
+  &--type1 {
+    background: var(--btn1-bg);
+    border-color: var(--btn1-border);
+  }
+
+  &--type2 {
+    background: var(--btn2-bg);
+    border-color: var(--btn2-border);
+  }
+
+  &--type3 {
+    background: var(--btn3-bg);
+    border-color: var(--btn3-border);
+  }
+}
+
+.closeIcon {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  object-fit: contain;
+}
