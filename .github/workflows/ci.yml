@@ -36,18 +36,19 @@ jobs:
           echo "author=$(git log -1 --pretty=%an)" >> $GITHUB_OUTPUT
           echo "commit_hash=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
-      - name: Notify Discord (success)
+      - name: Notify Discord on Success
         if: success()
-        uses: Ilshidur/action-discord@master
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: fjogeleit/http-request-action@v1.14.0
         with:
-          args: |
+          url: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          method: "POST"
+          customHeaders: |
+            Content-Type: application/json
+          data: |
             {
               "embeds": [{
-                "title": "🧪 CI 성공",
+                "title": "✅ CI 성공",
                 "description": "CI 빌드가 성공적으로 완료되었습니다.",
-                "color": 5814783,
                 "fields": [
                   {
                     "name": "Repository",
@@ -55,36 +56,33 @@ jobs:
                     "inline": true
                   },
                   {
-                    "name": "Branch / PR",
+                    "name": "Branch",
                     "value": "`${{ github.ref_name }}`",
                     "inline": true
                   },
                   {
                     "name": "Commit",
-                    "value": "`${{ steps.commit.outputs.commit_hash }}`\n${{ steps.commit.outputs.message }}"
-                  },
-                  {
-                    "name": "Author",
-                    "value": "`${{ steps.commit.outputs.author }}`",
+                    "value": "`${{ github.sha }}`",
                     "inline": true
                   }
                 ],
+                "color": 5814783,
                 "timestamp": "${{ github.run_started_at }}"
               }]
             }
-
-      - name: Notify Discord (failure)
+      - name: Notify Discord on Failure
         if: failure()
-        uses: Ilshidur/action-discord@master
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: fjogeleit/http-request-action@v1.14.0
         with:
-          args: |
+          url: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          method: "POST"
+          customHeaders: |
+            Content-Type: application/json
+          data: |
             {
               "embeds": [{
-                "title": "❌ CI 실패",
+                "title": "🔥 CI 실패",
                 "description": "CI 빌드 중 오류가 발생했습니다.",
-                "color": 15158332,
                 "fields": [
                   {
                     "name": "Repository",
@@ -92,20 +90,17 @@ jobs:
                     "inline": true
                   },
                   {
-                    "name": "Branch / PR",
+                    "name": "Branch",
                     "value": "`${{ github.ref_name }}`",
                     "inline": true
                   },
                   {
                     "name": "Commit",
-                    "value": "`${{ steps.commit.outputs.commit_hash }}`\n${{ steps.commit.outputs.message }}"
-                  },
-                  {
-                    "name": "Author",
-                    "value": "`${{ steps.commit.outputs.author }}`",
+                    "value": "`${{ github.sha }}`",
                     "inline": true
                   }
                 ],
+                "color": 15158332,
                 "timestamp": "${{ github.run_started_at }}"
               }]
             }
