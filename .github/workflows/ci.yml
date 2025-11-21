@@ -7,32 +7,100 @@ on:
     branches: [ main, develop ]
 
 jobs:
-  lint-and-build:
+  build:
+    name: Build
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
-      
+          cache: npm
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Build project
         run: npm run build
         env:
           VITE_API_BASE: https://soupspoon.kr/api/v1
           VITE_GOOGLE_LOGIN_URL: https://soupspoon.kr/oauth2/authorization/google
-      
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist
-          path: dist
-          retention-days: 7
 
+
+      - name: Notify Discord on Build Success
+        if: success()
+        uses: fjogeleit/http-request-action@v1.14.0
+        with:
+          url: ${{ secrets.DISCORD_WEBHOOK }}
+          method: "POST"
+          customHeaders: |
+            {
+              "Content-Type": "application/json"
+            }
+          data: |
+            {
+              "embeds": [{
+                "title": ":green_heart: CI 빌드 성공",
+                "description": "CI 빌드가 성공적으로 완료되었습니다.",
+                "fields": [
+                  {
+                    "name": "Repository",
+                    "value": "`${{ github.repository }}`",
+                    "inline": true
+                  },
+                  {
+                    "name": "Source Branch (PR)",
+                    "value": "`${{ github.event.pull_request.head.ref || github.ref_name }}`",
+                    "inline": true
+                  },
+                  {
+                    "name": "Target Branch (PR)",
+                    "value": "`${{ github.event.pull_request.base.ref || github.ref_name }}`",
+                    "inline": true
+                  }
+                ],
+                "color": 3066993,
+                "timestamp": "${{ github.event.head_commit.timestamp }}"
+              }]
+            }
+
+      - name: Notify Discord on Build Failure
+        if: failure()
+        uses: fjogeleit/http-request-action@v1.14.0
+        with:
+          url: ${{ secrets.DISCORD_WEBHOOK }}
+          method: "POST"
+          customHeaders: |
+            {
+              "Content-Type": "application/json"
+            }
+          data: |
+            {
+              "embeds": [{
+                "title": ":broken_heart: CI 빌드 실패",
+                "description": "CI 빌드 중 오류가 발생했습니다.",
+                "fields": [
+                  {
+                    "name": "Repository",
+                    "value": "`${{ github.repository }}`",
+                    "inline": true
+                  },
+                  {
+                    "name": "Source Branch (PR)",
+                    "value": "`${{ github.event.pull_request.head.ref || github.ref_name }}`",
+                    "inline": true
+                  },
+                  {
+                    "name": "Target Branch (PR)",
+                    "value": "`${{ github.event.pull_request.base.ref || github.ref_name }}`",
+                    "inline": true
+                  }
+                ],
+                "color": 15158332,
+                "timestamp": "${{ github.event.head_commit.timestamp }}"
+              }]
+            }
