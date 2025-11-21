@@ -1,39 +1,52 @@
 name: CD
 
 on:
-  workflow_run:
-    workflows: ["CI"]
+  push:
     branches: [main, develop]
-    types:
-      - completed
+  workflow_dispatch:
+
+env:
+  AWS_REGION: ap-northeast-2
+  S3_BUCKET: soupspoon.kr
 
 jobs:
   deploy:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
-    
+
     steps:
-      - name: Download build artifacts from CI
-        uses: actions/download-artifact@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          name: dist
-          run-id: ${{ github.event.workflow_run.id }}
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-northeast-2
-
-      - name: Clear S3 bucket
-        run: |
-          aws s3 rm s3://soupspoon.kr --recursive
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Deploy to S3
-        run: aws s3 sync dist/ s3://soupspoon.kr --delete
+        run: aws s3 sync dist/ s3://${{ env.S3_BUCKET }} --delete
 
-      - name: Notify Discord on Success
+      - name: Extract commit info
+        id: commit
+        run: |
+          echo "message=$(git log -1 --pretty=%B)" >> $GITHUB_OUTPUT
+          echo "author=$(git log -1 --pretty=%an)" >> $GITHUB_OUTPUT
+          echo "commit_hash=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Notify Discord (success)
         if: success()
         uses: Ilshidur/action-discord@master
         env:
@@ -42,8 +55,8 @@ jobs:
           args: |
             {
               "embeds": [{
-                "title": "✅ 배포 성공",
-                "description": "프론트엔드 배포가 성공적으로 완료되었습니다.",
+                "title": "🚀 배포 성공",
+                "description": "프론트엔드가 성공적으로 배포되었습니다.",
                 "color": 5814783,
                 "fields": [
                   {
@@ -58,18 +71,19 @@ jobs:
                   },
                   {
                     "name": "Commit",
-                    "value": "`${{ github.event.head_commit.message }}`"
+                    "value": "`${{ steps.commit.outputs.commit_hash }}`\n${{ steps.commit.outputs.message }}"
                   },
                   {
-                    "name": "Committer",
-                    "value": "`${{ github.event.head_commit.author.name }}`",
+                    "name": "Author",
+                    "value": "`${{ steps.commit.outputs.author }}`",
                     "inline": true
                   }
-                ]
+                ],
+                "timestamp": "${{ github.run_started_at }}"
               }]
             }
 
-      - name: Notify Discord on Failure
+      - name: Notify Discord (failure)
         if: failure()
         uses: Ilshidur/action-discord@master
         env:
@@ -79,7 +93,7 @@ jobs:
             {
               "embeds": [{
                 "title": "❌ 배포 실패",
-                "description": "프론트엔드 배포 중 오류가 발생했습니다.",
+                "description": "배포 중 오류가 발생했습니다.",
                 "color": 15158332,
                 "fields": [
                   {
@@ -94,13 +108,14 @@ jobs:
                   },
                   {
                     "name": "Commit",
-                    "value": "`${{ github.event.head_commit.message }}`"
+                    "value": "`${{ steps.commit.outputs.commit_hash }}`\n${{ steps.commit.outputs.message }}"
                   },
                   {
-                    "name": "Committer",
-                    "value": "`${{ github.event.head_commit.author.name }}`",
+                    "name": "Author",
+                    "value": "`${{ steps.commit.outputs.author }}`",
                     "inline": true
                   }
-                ]
+                ],
+                "timestamp": "${{ github.run_started_at }}"
               }]
             }

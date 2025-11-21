@@ -9,30 +9,103 @@ on:
 jobs:
   lint-and-build:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Build project
         run: npm run build
         env:
           VITE_API_BASE: https://soupspoon.kr/api/v1
           VITE_GOOGLE_LOGIN_URL: https://soupspoon.kr/oauth2/authorization/google
-      
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist
-          path: dist
-          retention-days: 7
 
+      - name: Extract commit info
+        id: commit
+        run: |
+          echo "message=$(git log -1 --pretty=%B)" >> $GITHUB_OUTPUT
+          echo "author=$(git log -1 --pretty=%an)" >> $GITHUB_OUTPUT
+          echo "commit_hash=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Notify Discord (success)
+        if: success()
+        uses: Ilshidur/action-discord@master
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        with:
+          args: |
+            {
+              "embeds": [{
+                "title": "🧪 CI 성공",
+                "description": "CI 빌드가 성공적으로 완료되었습니다.",
+                "color": 5814783,
+                "fields": [
+                  {
+                    "name": "Repository",
+                    "value": "`${{ github.repository }}`",
+                    "inline": true
+                  },
+                  {
+                    "name": "Branch / PR",
+                    "value": "`${{ github.ref_name }}`",
+                    "inline": true
+                  },
+                  {
+                    "name": "Commit",
+                    "value": "`${{ steps.commit.outputs.commit_hash }}`\n${{ steps.commit.outputs.message }}"
+                  },
+                  {
+                    "name": "Author",
+                    "value": "`${{ steps.commit.outputs.author }}`",
+                    "inline": true
+                  }
+                ],
+                "timestamp": "${{ github.run_started_at }}"
+              }]
+            }
+
+      - name: Notify Discord (failure)
+        if: failure()
+        uses: Ilshidur/action-discord@master
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        with:
+          args: |
+            {
+              "embeds": [{
+                "title": "❌ CI 실패",
+                "description": "CI 빌드 중 오류가 발생했습니다.",
+                "color": 15158332,
+                "fields": [
+                  {
+                    "name": "Repository",
+                    "value": "`${{ github.repository }}`",
+                    "inline": true
+                  },
+                  {
+                    "name": "Branch / PR",
+                    "value": "`${{ github.ref_name }}`",
+                    "inline": true
+                  },
+                  {
+                    "name": "Commit",
+                    "value": "`${{ steps.commit.outputs.commit_hash }}`\n${{ steps.commit.outputs.message }}"
+                  },
+                  {
+                    "name": "Author",
+                    "value": "`${{ steps.commit.outputs.author }}`",
+                    "inline": true
+                  }
+                ],
+                "timestamp": "${{ github.run_started_at }}"
+              }]
+            }
