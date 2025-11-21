@@ -1,8 +1,8 @@
 import { Routes, Route } from 'react-router-dom'
-import { LandingPage } from '../../pages/landing'
-import { HomePage } from '../../pages/home'
-import { NewsPage } from '../../pages/news'
-import { AdminPage } from '../../pages/admin'
+import { LandingPage } from '@/pages/landing'
+import { HomePage } from '@/pages/home'
+import { NewsPage } from '@/pages/news'
+import { AdminPage } from '@/pages/admin'
 
 // import { AuthGuard, AdminGuard, AdditionalInfoGuard } from '@/routes/guards';
 // import { MainLayout } from '@/routes/layouts/MainLayout';
