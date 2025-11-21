@@ -30,12 +30,6 @@ jobs:
           VITE_API_BASE: https://soupspoon.kr/api/v1
           VITE_GOOGLE_LOGIN_URL: https://soupspoon.kr/oauth2/authorization/google
 
-      - name: Extract commit info
-        id: commit
-        run: |
-          echo "message=$(git log -1 --pretty=%B)" >> $GITHUB_OUTPUT
-          echo "author=$(git log -1 --pretty=%an)" >> $GITHUB_OUTPUT
-          echo "commit_hash=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
       - name: Notify Discord on Build Success
         if: success()
@@ -44,10 +38,39 @@ jobs:
           url: ${{ secrets.DISCORD_WEBHOOK_URL }}
           method: "POST"
           customHeaders: |
-            Content-Type: application/json
+            {
+              "Content-Type": "application/json"
+            }
           data: |
             {
-              "content": ":green_heart: CI 빌드 성공 - `${{ github.repository }}` PR #${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}"
+              "embeds": [{
+                "title": "🚀 CI 빌드 성공",
+                "description": "CI 빌드가 성공적으로 완료되었습니다.",
+                "fields": [
+                  {
+                    "name": "Repository",
+                    "value": "`${{ github.repository }}`",
+                    "inline": true
+                  },
+                  {
+                    "name": "Branch",
+                    "value": "`${{ github.ref_name }}`",
+                    "inline": true
+                  },
+                  {
+                    "name": "Source Branch (PR)",
+                    "value": "`${{ github.event.pull_request.head.ref || 'N/A (push)' }}`",
+                    "inline": true
+                  },
+                  {
+                    "name": "Target Branch (PR)",
+                    "value": "`${{ github.event.pull_request.base.ref || 'N/A (push)' }}`",
+                    "inline": true
+                  }
+                ],
+                "color": 3066993,
+                "timestamp": "${{ github.event.head_commit.timestamp }}"
+              }]
             }
 
       - name: Notify Discord on Build Failure
@@ -57,8 +80,37 @@ jobs:
           url: ${{ secrets.DISCORD_WEBHOOK_URL }}
           method: "POST"
           customHeaders: |
-            Content-Type: application/json
+            {
+              "Content-Type": "application/json"
+            }
           data: |
             {
-              "content": ":broken_heart: CI 빌드 실패 - `${{ github.repository }}` PR #${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}"
+              "embeds": [{
+                "title": "❌ CI 빌드 실패",
+                "description": "CI 빌드 중 오류가 발생했습니다.",
+                "fields": [
+                  {
+                    "name": "Repository",
+                    "value": "`${{ github.repository }}`",
+                    "inline": true
+                  },
+                  {
+                    "name": "Branch",
+                    "value": "`${{ github.ref_name }}`",
+                    "inline": true
+                  },
+                  {
+                    "name": "Source Branch (PR)",
+                    "value": "`${{ github.event.pull_request.head.ref || 'N/A (push)' }}`",
+                    "inline": true
+                  },
+                  {
+                    "name": "Target Branch (PR)",
+                    "value": "`${{ github.event.pull_request.base.ref || 'N/A (push)' }}`",
+                    "inline": true
+                  }
+                ],
+                "color": 15158332,
+                "timestamp": "${{ github.event.head_commit.timestamp }}"
+              }]
             }
