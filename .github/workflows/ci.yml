@@ -36,76 +36,28 @@ jobs:
           echo "author=$(git log -1 --pretty=%an)" >> $GITHUB_OUTPUT
           echo "commit_hash=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
-      - name: Notify Discord on Success
+      - name: Notify Discord on Build Success
         if: success()
         uses: fjogeleit/http-request-action@v1.14.0
         with:
           url: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          method: POST
+          method: "POST"
           customHeaders: |
-            {
-              "Content-Type": "application/json"
-            }
+            Content-Type: application/json
           data: |
             {
-              "embeds": [{
-                "title": "🚀 CI 성공",
-                "description": "CI 빌드가 성공적으로 완료되었습니다.",
-                "fields": [
-                  {
-                    "name": "Repository",
-                    "value": "`${{ github.repository }}`",
-                    "inline": true
-                  },
-                  {
-                    "name": "Branch",
-                    "value": "`${{ github.ref_name }}`",
-                    "inline": true
-                  },
-                  {
-                    "name": "Commit",
-                    "value": "`${{ steps.commit.outputs.commit_hash }}`",
-                    "inline": true
-                  }
-                ],
-                "color": 3066993,
-                "timestamp": "${{ github.run_started_at }}"
-              }]
+              "content": ":green_heart: CI 빌드 성공 - `${{ github.repository }}` PR #${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}"
             }
 
-      - name: Notify Discord on Failure
+      - name: Notify Discord on Build Failure
         if: failure()
         uses: fjogeleit/http-request-action@v1.14.0
         with:
           url: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          method: POST
+          method: "POST"
           customHeaders: |
-            {
-              "Content-Type": "application/json"
-            }
+            Content-Type: application/json
           data: |
             {
-              "embeds": [{
-                "title": "🔥 CI 실패",
-                "description": "CI 빌드 중 오류가 발생했습니다.",
-                "fields": [
-                  {
-                    "name": "Repository",
-                    "value": "`${{ github.repository }}`",
-                    "inline": true
-                  },
-                  {
-                    "name": "Branch",
-                    "value": "`${{ github.ref_name }}`",
-                    "inline": true
-                  },
-                  {
-                    "name": "Commit",
-                    "value": "`${{ steps.commit.outputs.commit_hash }}`",
-                    "inline": true
-                  }
-                ],
-                "color": 15158332,
-                "timestamp": "${{ github.run_started_at }}"
-              }]
+              "content": ":broken_heart: CI 빌드 실패 - `${{ github.repository }}` PR #${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}"
             }
