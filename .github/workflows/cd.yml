@@ -68,15 +68,6 @@ jobs:
                     "value": "`${{ github.ref_name }}`",
                     "inline": true
                   },
-                  {
-                    "name": "Commit",
-                    "value": "`${{ steps.commit.outputs.commit_hash }}`\n${{ steps.commit.outputs.message }}"
-                  },
-                  {
-                    "name": "Author",
-                    "value": "`${{ steps.commit.outputs.author }}`",
-                    "inline": true
-                  }
                 ],
                 "timestamp": "${{ github.run_started_at }}"
               }]
@@ -109,15 +100,6 @@ jobs:
                     "value": "`${{ github.ref_name }}`",
                     "inline": true
                   },
-                  {
-                    "name": "Commit",
-                    "value": "`${{ steps.commit.outputs.commit_hash }}`\n${{ steps.commit.outputs.message }}"
-                  },
-                  {
-                    "name": "Author",
-                    "value": "`${{ steps.commit.outputs.author }}`",
-                    "inline": true
-                  }
                 ],
                 "timestamp": "${{ github.run_started_at }}"
               }]
