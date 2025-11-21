@@ -39,13 +39,6 @@ jobs:
       - name: Deploy to S3
         run: aws s3 sync dist/ s3://${{ env.S3_BUCKET }} --delete
 
-      - name: Extract commit info
-        id: commit
-        run: |
-          echo "message=$(git log -1 --pretty=%B)" >> $GITHUB_OUTPUT
-          echo "author=$(git log -1 --pretty=%an)" >> $GITHUB_OUTPUT
-          echo "commit_hash=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
-
       - name: Notify Discord (success)
         if: success()
         uses: Ilshidur/action-discord@master
@@ -65,8 +58,13 @@ jobs:
                     "inline": true
                   },
                   {
-                    "name": "Branch",
-                    "value": "`${{ github.ref_name }}`",
+                    "name": "Source Branch (PR)",
+                    "value": "`${{ github.event.pull_request.head.ref || github.ref_name }}`",
+                    "inline": true
+                  },
+                  {
+                    "name": "Target Branch (PR)",
+                    "value": "`${{ github.event.pull_request.base.ref || github.ref_name }}`",
                     "inline": true
                   },
                   {
@@ -102,8 +100,13 @@ jobs:
                     "inline": true
                   },
                   {
-                    "name": "Branch",
-                    "value": "`${{ github.ref_name }}`",
+                    "name": "Source Branch (PR)",
+                    "value": "`${{ github.event.pull_request.head.ref || github.ref_name }}`",
+                    "inline": true
+                  },
+                  {
+                    "name": "Target Branch (PR)",
+                    "value": "`${{ github.event.pull_request.base.ref || github.ref_name }}`",
                     "inline": true
                   },
                   {
