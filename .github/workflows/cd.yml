@@ -39,13 +39,19 @@ jobs:
       - name: Deploy to S3
         run: aws s3 sync dist/ s3://${{ env.S3_BUCKET }} --delete
 
+
+
       - name: Notify Discord (success)
         if: success()
-        uses: Ilshidur/action-discord@master
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: fjogeleit/http-request-action@v1.14.0
         with:
-          args: |
+          url: ${{ secrets.DISCORD_WEBHOOK }}
+          method: "POST"
+          customHeaders: |
+            {
+              "Content-Type": "application/json"
+            }
+          data: |
             {
               "embeds": [{
                 "title": "🚀 배포 성공",
@@ -58,13 +64,8 @@ jobs:
                     "inline": true
                   },
                   {
-                    "name": "Source Branch (PR)",
-                    "value": "`${{ github.event.pull_request.head.ref || github.ref_name }}`",
-                    "inline": true
-                  },
-                  {
-                    "name": "Target Branch (PR)",
-                    "value": "`${{ github.event.pull_request.base.ref || github.ref_name }}`",
+                    "name": "Branch",
+                    "value": "`${{ github.ref_name }}`",
                     "inline": true
                   },
                   {
@@ -83,11 +84,15 @@ jobs:
 
       - name: Notify Discord (failure)
         if: failure()
-        uses: Ilshidur/action-discord@master
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: fjogeleit/http-request-action@v1.14.0
         with:
-          args: |
+          url: ${{ secrets.DISCORD_WEBHOOK }}
+          method: "POST"
+          customHeaders: |
+            {
+              "Content-Type": "application/json"
+            }
+          data: |
             {
               "embeds": [{
                 "title": "❌ 배포 실패",
@@ -100,13 +105,8 @@ jobs:
                     "inline": true
                   },
                   {
-                    "name": "Source Branch (PR)",
-                    "value": "`${{ github.event.pull_request.head.ref || github.ref_name }}`",
-                    "inline": true
-                  },
-                  {
-                    "name": "Target Branch (PR)",
-                    "value": "`${{ github.event.pull_request.base.ref || github.ref_name }}`",
+                    "name": "Branch",
+                    "value": "`${{ github.ref_name }}`",
                     "inline": true
                   },
                   {
