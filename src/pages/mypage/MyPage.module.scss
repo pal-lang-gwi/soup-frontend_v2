@@ -1,4 +1,4 @@
-@import '../../app/styles/color.scss';
+@use '../../app/styles/color.scss' as *;
 
 .root {
   min-height: 100%;
@@ -23,10 +23,15 @@
     font-weight: 700;
     margin: 10px 0;
   }
+}
 
-  .desc {
-    font-size: 14px;
-    color: #666;
+/* 공통 description 스타일 */
+.description {
+  font-size: 14px;
+  color: var(--text-secondary, #666);
+
+  &.withMargin {
+    margin-bottom: 12px;
   }
 }
 
@@ -64,13 +69,15 @@
   object-fit: cover;
 }
 
-/* Hover overlay */
+/* Hover overlay - 버튼으로 변경됨 */
 .overlay {
   position: absolute;
   inset: 0;
 
   background: rgba(0, 0, 0, 0.35);
   border-radius: 8px;
+  border: none;
+  padding: 0;
 
   display: flex;
   align-items: center;
@@ -79,10 +86,16 @@
   opacity: 0;
   transition: opacity 0.2s ease-in-out;
   cursor: pointer;
-}
 
-.profileImgOverlayContainer:hover .overlay {
-  opacity: 1;
+  &:hover {
+    opacity: 1;
+  }
+
+  &:focus-visible {
+    opacity: 1;
+    outline: 2px solid var(--primary-color, #007aff);
+    outline-offset: 2px;
+  }
 }
 
 /* overlay 텍스트 */
@@ -90,6 +103,7 @@
   color: #fff;
   font-size: 16px;
   font-weight: 500;
+  pointer-events: none;
 }
 
 /* --- 닉네임 변경 --- */
@@ -97,6 +111,12 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+.errorMessage {
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--color-error, #e03131);
 }
 
 .label {
@@ -116,17 +136,29 @@
   border: 1px solid #ddd;
   border-radius: 10px;
   font-size: 15px;
+
+  &:focus {
+    outline: none;
+    border-color: var(--primary-color, #007aff);
+  }
+
+  &[aria-invalid="true"] {
+    border-color: var(--color-error, #e03131);
+  }
 }
 
 /* --- 키워드 칩 --- */
 .keywordChip {
   margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
-.desc2 {
+.emptyMessage {
   font-size: 14px;
-  color: #666;
-  margin-bottom: 12px;
+  color: var(--text-secondary, #999);
+  font-style: italic;
 }
 
 /* footer */
