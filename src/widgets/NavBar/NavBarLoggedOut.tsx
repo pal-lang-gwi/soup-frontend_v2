@@ -2,7 +2,7 @@ import { useState } from 'react'
 import styles from './NavBar.module.scss'
 import { Button } from '@/shared/ui/Button/Button'
 import soupLogo from '@/shared/assets/soup_logo.png'
-import LoginModal from '@/widgets/auth/LoginModal'
+import { LoginModal } from '@/widgets/auth/LoginModal'
 
 export const NavBarLoggedOut = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
