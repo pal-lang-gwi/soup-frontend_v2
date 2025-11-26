@@ -8,7 +8,7 @@ interface LoginModalProps {
   onClose: () => void
 }
 
-const LoginModal = ({ onClose }: LoginModalProps) => {
+export const LoginModal = ({ onClose }: LoginModalProps) => {
   const handleGoogleLogin = () => {
     window.location.href = GOOGLE_LOGIN_URL
   }
@@ -28,5 +28,3 @@ const LoginModal = ({ onClose }: LoginModalProps) => {
     </div>
   )
 }
-
-export default LoginModal
