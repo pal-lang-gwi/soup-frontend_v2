@@ -83,6 +83,17 @@ $shadow-soft: 0 4px 18px rgba(0, 0, 0, 0.08);
 }
 
 /* 검색 입력 박스 */
+.searchBox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: white;
+  border: $border-light;
+  border-radius: 50px;
+  padding: 12px 20px;
+  width: 350px;
+}
+
 .searchBoxInput {
   display: flex;
   align-items: center;
