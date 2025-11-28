@@ -4,7 +4,7 @@ import styles from './NewsPage.module.scss'
 import { NavBarLoggedIn } from '@/widgets/NavBar/NavBarLoggedIn'
 import mailImg from '@/shared/assets/mail.png'
 import { Button } from '@/shared/ui/Button/Button'
-import type { Article, NewsDtos } from '@/types/@fontsource/news'
+import type { Article, NewsDtos } from '@/types/news'
 
 const newsBlock: NewsDtos = {
   keyword: 'AI',
