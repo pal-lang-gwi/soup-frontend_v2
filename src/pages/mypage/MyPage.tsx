@@ -1,10 +1,11 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef } from 'react'
 import { Button } from '@/shared/ui/Button/Button'
 import styles from './MyPage.module.scss'
 import { NavBarLoggedIn } from '@/widgets/NavBar/NavBarLoggedIn'
 
 const NICKNAME_MIN_LENGTH = 3
 const NICKNAME_MAX_LENGTH = 12
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024 // 5MB
 
 const MyPage = () => {
   const [nicknameState, setNicknameState] = useState({
@@ -13,6 +14,8 @@ const MyPage = () => {
   })
   const [keywords, setKeywords] = useState(['AI', '경제', '스타트업', '기술'])
   const [profileImgError, setProfileImgError] = useState(false)
+  const [profileImage, setProfileImage] = useState<string>('/sample-profile.jpg')
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleNicknameChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
@@ -39,8 +42,44 @@ const MyPage = () => {
   }, [])
 
   const handleImageChange = useCallback(() => {
-    console.log('이미지 변경')
-    // 파일 선택 로직
+    fileInputRef.current?.click()
+  }, [])
+
+  const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    // 파일 타입 검증
+    if (!file.type.startsWith('image/')) {
+      alert('이미지 파일만 업로드 가능합니다.')
+      return
+    }
+
+    // 파일 크기 검증
+    if (file.size > MAX_IMAGE_SIZE) {
+      alert('파일 크기는 5MB 이하여야 합니다.')
+      return
+    }
+
+    // 파일 미리보기 생성
+    const reader = new FileReader()
+    reader.onloadend = () => {
+      if (reader.result) {
+        setProfileImage(reader.result as string)
+        setProfileImgError(false)
+        console.log('이미지 변경:', file.name)
+        // 여기서 API 호출하여 서버에 업로드할 수 있습니다
+      }
+    }
+    reader.onerror = () => {
+      alert('파일을 읽는 중 오류가 발생했습니다.')
+    }
+    reader.readAsDataURL(file)
+
+    // input 초기화 (같은 파일을 다시 선택할 수 있도록)
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
   }, [])
 
   const handleImageError = useCallback(() => {
@@ -66,9 +105,17 @@ const MyPage = () => {
         <div className={styles.profileColumn}>
           {/* 프로필 이미지 */}
           <div className={styles.profileImgOverlayContainer}>
-            {!profileImgError ? (
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleFileSelect}
+              className={styles.fileInput}
+              aria-label="프로필 이미지 파일 선택"
+            />
+            {!profileImgError && profileImage ? (
               <img
-                src="/sample-profile.jpg"
+                src={profileImage}
                 className={styles.profileImg}
                 alt="프로필 이미지"
                 onError={handleImageError}
