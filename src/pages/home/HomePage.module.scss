@@ -1,4 +1,4 @@
-@import '../../app/styles/color.scss';
+@use '../../app/styles/color.scss' as *;
 
 .root {
   min-height: 100%;

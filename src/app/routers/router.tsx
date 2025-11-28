@@ -3,6 +3,7 @@ import { LandingPage } from '@/pages/landing'
 import { HomePage } from '@/pages/home'
 import { NewsPage } from '@/pages/news'
 import { AdminPage } from '@/pages/admin'
+import { MyPage } from '@/pages/mypage'
 
 // import { AuthGuard, AdminGuard, AdditionalInfoGuard } from '@/routes/guards';
 // import { MainLayout } from '@/routes/layouts/MainLayout';
@@ -14,6 +15,7 @@ const AppRoutes = () => (
     {/* 로그인 후 접근 가능 페이지 */}
     <Route path='/home' element={<HomePage />} />
     <Route path='/news' element={<NewsPage />} />
+    <Route path='/mypage' element={<MyPage />} />
 
     {/* 관리자 페이지 */}
     <Route path='/admin' element={<AdminPage />} />
