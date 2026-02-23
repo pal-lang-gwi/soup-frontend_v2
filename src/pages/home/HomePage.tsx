@@ -3,9 +3,17 @@ import { Button } from '@/shared/ui/Button/Button'
 import { Input } from '@/shared/ui/Input/Input'
 import mailImg from '@/shared/assets/mail.png'
 import { NavBarLoggedIn } from '@/widgets/NavBar/NavBarLoggedIn'
+// import { AdditionalInfoGuard } from '@/features/auth'
+import { useSearchParams } from 'react-router-dom'
 
 const HomePage = () => {
+  const [params] = useSearchParams()
+
+  const email = params.get('email')
+  const userId = params.get('userId')
+
   return (
+    // <AdditionalInfoGuard>
     <div className={styles.root}>
       <NavBarLoggedIn />
       <div className={styles.hero}>
@@ -56,6 +64,7 @@ const HomePage = () => {
       </div>
       <Input />
     </div>
+    // </AdditionalInfoGuard>
   )
 }
 
