@@ -1,27 +1,16 @@
-import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
-import path from 'path'
+import react from '@vitejs/plugin-react'
+import tsconfigPaths from 'vite-tsconfig-paths'
 
-// https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src'),
-    },
-  },
-  server: {
-    proxy: {
-      '/api': {
-        target: 'https://soupspoon.kr',
-        changeOrigin: true,
-        secure: false,
-      },
-      '/oauth2': {
-        target: 'https://soupspoon.kr',
-        changeOrigin: true,
-        secure: false,
-      },
-    },
-  },
+  plugins: [react(), tsconfigPaths()],
+  // server: {
+  //   proxy: {
+  //     '/api': {
+  //       target: 'https://soupspoon.kr',
+  //       changeOrigin: true,
+  //       secure: true,
+  //     },
+  //   },
+  // },
 })
