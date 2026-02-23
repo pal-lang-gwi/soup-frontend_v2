@@ -1,22 +1,41 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import { LandingPage } from '@/pages/landing'
 import { HomePage } from '@/pages/home'
 import { NewsPage } from '@/pages/news'
 import { AdminPage } from '@/pages/admin'
-
-// import { AuthGuard, AdminGuard, AdditionalInfoGuard } from '@/routes/guards';
-// import { MainLayout } from '@/routes/layouts/MainLayout';
+// import { AdditionalInfoGuard } from '@/features/auth'
 
 const AppRoutes = () => (
   <Routes>
     <Route path='/' element={<LandingPage />} />
+    <Route
+      path='/home'
+      element={
+        // <AdditionalInfoGuard>
+        <HomePage />
+        // </AdditionalInfoGuard>
+      }
+    />
 
-    {/* 로그인 후 접근 가능 페이지 */}
-    <Route path='/home' element={<HomePage />} />
-    <Route path='/news' element={<NewsPage />} />
+    <Route
+      path='/news'
+      element={
+        // <AdditionalInfoGuard>
+        <NewsPage />
+        // </AdditionalInfoGuard>
+      }
+    />
 
-    {/* 관리자 페이지 */}
-    <Route path='/admin' element={<AdminPage />} />
+    <Route
+      path='/admin'
+      element={
+        // <AdditionalInfoGuard>
+        <AdminPage />
+        // </AdditionalInfoGuard>
+      }
+    />
+
+    <Route path='*' element={<Navigate to='/' replace />} />
   </Routes>
 )
 
