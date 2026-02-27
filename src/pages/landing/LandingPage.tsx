@@ -22,7 +22,11 @@ const LandingPage = () => {
   }, [])
 
   if (isLoggedIn === null) {
-    return <div style={{ display: 'flex', justifyContent: 'center', marginTop: '50px' }}>Loading...</div>
+    return (
+      <div className={styles.splashScreen}>
+        <img src={mailImg} alt="로딩중" className={styles.splashLogo} />
+      </div>
+    )
   }
   
   if (isLoggedIn) {
