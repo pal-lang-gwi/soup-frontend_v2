@@ -4,25 +4,9 @@ import { Input } from '@/shared/ui/Input/Input'
 import mailImg from '@/shared/assets/mail.png'
 import { NavBarLoggedIn } from '@/widgets/NavBar/NavBarLoggedIn'
 // import { AdditionalInfoGuard } from '@/features/auth'
-import { useSearchParams } from 'react-router-dom'
-import { useEffect } from 'react'
-import { getUser } from '@/entities/user/api/getUser'
+
 
 const HomePage = () => {
-  const [params] = useSearchParams()
-
-  const email = params.get('email')
-  const userId = params.get('userId')
-
-  useEffect(() => {
-    getUser()
-      .then((data) => {
-        console.log('유저정보:', data)
-      })
-      .catch((err) => {
-        console.log('에러:', err)
-      })
-  }, [])
 
   return (
     // <AdditionalInfoGuard>

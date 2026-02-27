@@ -2,8 +2,33 @@ import styles from './LandingPage.module.scss'
 import { Input } from '@/shared/ui/Input/Input'
 import mailImg from '@/shared/assets/mail.png'
 import { NavBarLoggedOut } from '@/widgets/NavBar/NavBarLoggedOut'
+import { useEffect,useState } from 'react'
+import { getUser } from '@/entities/user/api/getUser'
+import HomePage from '@/pages/home/HomePage'
 
 const LandingPage = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null)
+
+  useEffect(() => {
+    getUser()
+      .then((data) => {
+        console.log('로그인 확인됨:', data)
+        setIsLoggedIn(true)
+      })
+      .catch((err) => {
+        console.log('비로그인 상태:', err)
+        setIsLoggedIn(false)
+      })
+  }, [])
+
+  if (isLoggedIn === null) {
+    return <div style={{ display: 'flex', justifyContent: 'center', marginTop: '50px' }}>Loading...</div>
+  }
+  
+  if (isLoggedIn) {
+    return <HomePage />
+  }
+
   return (
     <div className={styles.root}>
       <NavBarLoggedOut />
