@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import styles from './InitialInfoModal.module.scss'
 import xCircleImg from '@/shared/assets/x_circle.png' 
-import { initUser } from '@/entities/user/api/initUser'
+import { initUser } from '@/features/user-init/api/initUser'
+
 
 interface Props {
   onClose: () => void

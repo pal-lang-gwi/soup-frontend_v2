@@ -5,7 +5,7 @@ import mailImg from '@/shared/assets/mail.png'
 import { NavBarLoggedOut } from '@/widgets/NavBar/NavBarLoggedOut'
 import { getUser } from '@/entities/user/api/getUser'
 import HomePage from '@/pages/home/HomePage'
-import { InitialInfoModal } from '@/features/auth/ui/InitialInfoModal'
+import { InitialInfoModal } from '@/features/user-init/ui/InitialInfoModal'
 
 const LandingPage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null)
