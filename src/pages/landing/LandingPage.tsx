@@ -1,51 +1,9 @@
-import { useState, useEffect } from 'react'
 import styles from './LandingPage.module.scss'
 import { Input } from '@/shared/ui/Input/Input'
 import mailImg from '@/shared/assets/mail.png'
 import { NavBarLoggedOut } from '@/widgets/NavBar/NavBarLoggedOut'
-import { getUser } from '@/entities/user/api/getUser'
-import HomePage from '@/pages/home/HomePage'
-import { InitialInfoModal } from '@/features/user-init/ui/InitialInfoModal'
 
 const LandingPage = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null)
-  
-  const [showModal, setShowModal] = useState(false)
-
-  useEffect(() => {
-    getUser()
-      .then((data) => {
-        setIsLoggedIn(true)
-        console.log('API 응답 전체:', data)
-
-        if (!data.nickname) {
-          setShowModal(true)
-        }
-      })
-      .catch(() => {
-        setIsLoggedIn(false)
-        setShowModal(false)
-      })
-  }, [])
-
-  if (isLoggedIn === null) {
-    return (
-      <div className={styles.splashScreen}>
-        <img src={mailImg} alt="로딩중" className={styles.splashLogo} />
-      </div>
-    )
-  }
-
-  if (isLoggedIn) {
-    return (
-      <>
-        <HomePage />
-        {showModal && (
-          <InitialInfoModal onClose={() => setShowModal(false)} />
-        )}
-      </>
-    )
-  }
 
   return (
     <div className={styles.root}>
