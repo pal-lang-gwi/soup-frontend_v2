@@ -10,7 +10,7 @@ import { getUser } from '@/entities/user/api/getUser'
 import { InitialInfoModal } from '@/features/user-init/ui/InitialInfoModal'
 
 const HomePage = () => {
-  const [showModal, setShowModal] = useState(true)
+  const [showModal, setShowModal] = useState(false)
 
   // 렌더링 시 유저 닉네임 유무 확인
   useEffect(() => {
