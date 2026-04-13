@@ -1,0 +1,263 @@
+/* 공통 변수 (선언만, 실제 변수 파일로 분리 가능) */
+$border-light: 1px solid #eee;
+$radius-md: 12px;
+$shadow-soft: 0 4px 18px rgba(0, 0, 0, 0.08);
+
+/* ROOT */
+.root {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+/* LAYOUT */
+.contentWrapper {
+  display: flex;
+  width: 100%;
+  padding: 0 40px;
+  gap: 24px;
+  box-sizing: border-box;
+}
+
+/* LEFT */
+.leftArea {
+  width: 100%;
+  transition: width 0.3s ease;
+}
+.shrink {
+  width: 70%;
+}
+
+/* RIGHT PANEL */
+.detailPanel {
+  width: 0;
+  max-width: 460px;
+  height: 100vh;
+  overflow-y: auto;
+  background: #fff;
+  border-left: $border-light;
+  transition: width 0.3s ease, opacity 0.2s ease;
+  opacity: 0;
+}
+.open {
+  width: 30%;
+  opacity: 1;
+}
+
+/* HERO */
+.hero {
+  width: 100%;
+  padding: 40px 0 0 0;
+  background: transparent;
+
+  .heroInner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+}
+
+.heroLeft {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.badge {
+  background: #e4ffb2;
+  padding: 10px 20px;
+  border-radius: 50px;
+  font-size: 15px;
+  font-weight: 500;
+  width: fit-content;
+}
+
+.searchRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* 검색 입력 박스 */
+.searchBox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: white;
+  border: $border-light;
+  border-radius: 50px;
+  padding: 12px 20px;
+  width: 350px;
+}
+
+.searchBoxInput {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: white;
+  border: $border-light;
+  border-radius: 50px;
+  padding: 12px 20px;
+  width: 350px;
+}
+
+.searchIcon {
+  opacity: 0.6;
+}
+
+.searchInput {
+  border: none;
+  outline: none;
+  flex: 1;
+  font-size: 14px;
+}
+
+/* HERO Right */
+.heroRight {
+  width: 220px;
+  height: 220px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.mailImg {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+/* KEYWORD */
+.keywordSection {
+  margin: 40px auto 20px;
+  text-align: center;
+}
+
+.keywordLabel {
+  font-size: 16px;
+  color: #777;
+}
+
+.keywordValue {
+  font-size: 32px;
+  font-weight: 700;
+}
+
+/* 카드 리스트 */
+.listSection {
+  width: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 20px 0 60px;
+}
+
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 22px;
+}
+
+/* 카드 */
+/* 카드 */
+.card {
+  display: flex;             /* ← 추가 */
+  flex-direction: column;    /* ← 추가 */
+
+  background: #fff;
+  border-radius: $radius-md;
+  border: $border-light;
+  cursor: pointer;
+  overflow: hidden;
+  padding: 0;
+  text-align: left;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: $shadow-soft;
+  }
+}
+
+.cardImage {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+}
+
+.cardBody {
+  padding: 12px;
+}
+
+.cardTitle {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.cardSummary {
+  font-size: 14px;
+  color: #555;
+}
+
+/* 상세 패널 내부 */
+.closeBtn {
+  background: none;
+  border: none;
+  padding: 20px;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.detailTitle {
+  font-size: 22px;
+  font-weight: 700;
+  padding: 0 20px;
+}
+
+.detailMeta {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20px;
+  color: #666;
+}
+
+.detailContent {
+  padding: 20px;
+  line-height: 1.6;
+}
+
+/* Footer */
+.footer {
+  padding: 40px;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+/* 반응형 기본 */
+@media (max-width: 768px) {
+  .contentWrapper {
+    flex-direction: column;
+    padding: 0 20px;
+  }
+
+  .shrink {
+    width: 100%;
+  }
+
+  .open {
+    width: 100%;
+  }
+
+  .heroRight {
+    width: 160px;
+    height: 160px;
+  }
+
+  .searchBoxInput {
+    width: 100%;
+  }
+}
