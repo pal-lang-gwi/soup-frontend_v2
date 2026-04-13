@@ -1,4 +1,4 @@
-@use '../../app/styles/color.scss' as *;
+@use '../../app/styles/color.scss';
 
 .root {
   min-height: 100%;
@@ -42,7 +42,7 @@
 .title1 {
   font-size: 60px;
   font-weight: bold;
-  margin:20px;
+  margin: 20px;
 }
 
 .title2 {

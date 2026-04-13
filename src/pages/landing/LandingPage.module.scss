@@ -1,4 +1,4 @@
-@import '../../app/styles/color.scss';
+@use '../../app/styles/color.scss';
 
 .root {
   min-height: 100%;
@@ -42,7 +42,7 @@
 .title1 {
   font-size: 60px;
   font-weight: bold;
-  margin:20px;
+  margin: 20px;
 }
 
 .title2 {
@@ -51,3 +51,22 @@
   font-weight: 200;
 }
 
+.splashScreen {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff; 
+
+  .splashLogo {
+    width: 80px; 
+    animation: pulse 1.5s infinite ease-in-out; 
+  }
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; transform: scale(0.95); }
+  50% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0.6; transform: scale(0.95); }
+}
