@@ -3,6 +3,7 @@ import { LandingPage } from '@/pages/landing'
 import { HomePage } from '@/pages/home'
 import { NewsPage } from '@/pages/news'
 import { AdminPage } from '@/pages/admin'
+import { MyPage } from '@/pages/mypage'
 import { useState, useEffect } from 'react'
 import { getUser } from '@/entities/user/api/getUser'
 import mailImg from '@/shared/assets/mail.png'
@@ -38,6 +39,10 @@ const AppRoutes = () => (
       }
     />
 
+    {/* 로그인 후 접근 가능 페이지 */}
+    <Route path='/home' element={<HomePage />} />
+    <Route path='/news' element={<NewsPage />} />
+    <Route path='/mypage' element={<MyPage />} />
     <Route
       path='/admin'
       element={
