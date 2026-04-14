@@ -59,20 +59,17 @@ const HomePage = () => {
           </Button>
         </div>
         <div className={styles.keywordRow}>
-          <p>검색기록</p>
-          <Button size='s' typeStyle='type1' close={true}>
+          <p>구독중인 키워드</p>
+          <Button size='s' typeStyle='type1'>
             블록체인
           </Button>
-          <Button size='s' typeStyle='type1' close={true}>
+          <Button size='s' typeStyle='type1'>
             주식투자
           </Button>
-          <Button size='s' typeStyle='type1' close={true}>
+          <Button size='s' typeStyle='type1'>
             파이어족
           </Button>
-          <Button size='s' typeStyle='type1' close={true}>
-            테슬라
-          </Button>
-          <Button size='s' typeStyle='type1' close={true}>
+          <Button size='s' typeStyle='type1'>
             테슬라
           </Button>
         </div>
