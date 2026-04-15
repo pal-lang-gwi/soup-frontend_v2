@@ -7,24 +7,35 @@ import { NavBarLoggedIn } from '@/widgets/NavBar/NavBarLoggedIn'
 import { useState, useEffect } from 'react'
 
 import { getUser } from '@/entities/user/api/getUser'
+import { getKeywords } from '@/entities/keyword/api/getKeywords' 
+import type { Subscription } from '@/entities/keyword/api/getKeywords' 
 import { InitialInfoModal } from '@/features/user-init/ui/InitialInfoModal'
 
 const HomePage = () => {
   const [showModal, setShowModal] = useState(false)
+  const [keywords, setKeywords] = useState<Subscription[]>([])
 
-  // 렌더링 시 유저 닉네임 유무 확인
   useEffect(() => {
+    // 유저 정보 조회
     getUser()
       .then((data) => {
         if (!data.nickname) {
           setShowModal(true)
-          console.log(data)
         }
       })
       .catch((error) => {
         console.error('유저 정보를 불러오는 데 실패했습니다.', error)
       })
-  },[])
+
+    // 키워드 목록 조회
+    getKeywords()
+      .then((data) => {
+        setKeywords(data)
+      })
+      .catch((error) => {
+        console.error('키워드 목록을 불러오는 데 실패했습니다.', error)
+      })
+  }, [])
 
   return (
     <>
@@ -54,29 +65,23 @@ const HomePage = () => {
           <Button size='s' typeStyle='type1'>
             테슬라
           </Button>
-          <Button size='s' typeStyle='type1'>
-            테슬라
-          </Button>
         </div>
+
         <div className={styles.keywordRow}>
           <p>구독중인 키워드</p>
-          <Button size='s' typeStyle='type1'>
-            블록체인
-          </Button>
-          <Button size='s' typeStyle='type1'>
-            주식투자
-          </Button>
-          <Button size='s' typeStyle='type1'>
-            파이어족
-          </Button>
-          <Button size='s' typeStyle='type1'>
-            테슬라
-          </Button>
+          {keywords.length > 0 ? (
+            keywords.map((item) => (
+              <Button key={item.subscriptionId} size='s' typeStyle='type1'>
+                {item.keywordInfo.keyword}
+              </Button>
+            ))
+          ) : (
+            <span className={styles.emptyText}>구독 중인 키워드가 없습니다.</span>
+          )}
         </div>
         <Input />
       </div>
 
-      
       {showModal && (
         <InitialInfoModal onClose={() => setShowModal(false)} />
       )}
