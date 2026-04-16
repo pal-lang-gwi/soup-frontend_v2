@@ -10,6 +10,6 @@ export interface SubscribeResponse {
 }
 
 export const subscribeKeyword = async (keywordId: string) => {
-  const response = await apiClient.post('/keywords', { keywordId })
+  const response = await apiClient.post('/keywords/subscriptions', { keywordId })
   return response.data
 }
