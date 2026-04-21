@@ -1,47 +1,20 @@
-// 키워드 검색
-export interface SearchKeywordItem {
-    subscriptionId: string | null;
-    keywordId: string;
+export interface Keyword {
+    id: number;
     name: string;
-    isSubscribed: string; // true/false
+    normalizedName: string;
+    isSubscribed: boolean;
   }
   
-  export interface SearchKeywordResponse {
-    success: boolean;
-    response: {
-      keywords: SearchKeywordItem[];
-    } | null;
-    error: {
-      message: string;
-      status: number;
-    } | null;
+  // 키워드 검색
+  export interface KeywordSearchResponseData {
+    keywords: Keyword[];
+    totalElements: number;
+    totalPages: number;
+    currentPage: number;
   }
   
-
-  // 내 키워드
-  export interface MyKeywordItem {
-    subscriptionId: number;
-    keywordInfo: {
-      keywordId: number;
-      keyword: string;
-      registeredAt: string; 
-    };
-  }
-  
-  // 키워드 구독/해제
-  export interface SubscribedKeywordResult {
-    keywordId: string;
-    keywordName: string;
-  }
-  
-  export interface UnsubscribedKeywordResult {
-    userId: string;
-    unsubscribedKeyword: string;
-  }
-  
-  // 신규 키워드
-  export interface RequestKeywordResult {
-    requestId: number;
+  export interface KeywordSearchParams {
     keyword: string;
-    status: string; 
+    page?: number;     // 기본값 0
+    size?: number;     // 기본값 20
   }
