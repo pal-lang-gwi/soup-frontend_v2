@@ -44,6 +44,7 @@ jobs:
       - name: Notify Discord (success)
         if: success()
         uses: fjogeleit/http-request-action@v1.14.0
+        continue-on-error: true
         with:
           url: ${{ secrets.DISCORD_WEBHOOK }}
           method: "POST"
@@ -67,15 +68,15 @@ jobs:
                     "name": "Branch",
                     "value": "`${{ github.ref_name }}`",
                     "inline": true
-                  },
-                ],
-                "timestamp": "${{ github.run_started_at }}"
+                  }
+                ]
               }]
             }
 
       - name: Notify Discord (failure)
         if: failure()
         uses: fjogeleit/http-request-action@v1.14.0
+        continue-on-error: true
         with:
           url: ${{ secrets.DISCORD_WEBHOOK }}
           method: "POST"
@@ -99,8 +100,7 @@ jobs:
                     "name": "Branch",
                     "value": "`${{ github.ref_name }}`",
                     "inline": true
-                  },
-                ],
-                "timestamp": "${{ github.run_started_at }}"
+                  }
+                ]
               }]
             }

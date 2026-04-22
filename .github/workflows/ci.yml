@@ -32,6 +32,7 @@ jobs:
       - name: Notify Discord on Build Success
         if: success()
         uses: fjogeleit/http-request-action@v1.14.0
+        continue-on-error: true
         with:
           url: ${{ secrets.DISCORD_WEBHOOK }}
           method: "POST"
@@ -61,14 +62,14 @@ jobs:
                     "inline": true
                   }
                 ],
-                "color": 3066993,
-                "timestamp": "${{ github.event.head_commit.timestamp }}"
+                "color": 3066993
               }]
             }
 
       - name: Notify Discord on Build Failure
         if: failure()
         uses: fjogeleit/http-request-action@v1.14.0
+        continue-on-error: true
         with:
           url: ${{ secrets.DISCORD_WEBHOOK }}
           method: "POST"
@@ -98,7 +99,6 @@ jobs:
                     "inline": true
                   }
                 ],
-                "color": 15158332,
-                "timestamp": "${{ github.event.head_commit.timestamp }}"
+                "color": 15158332
               }]
             }
