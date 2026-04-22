@@ -1,19 +1,36 @@
 import styles from './HomePage.module.scss'
 import { Button } from '@/shared/ui/Button/Button'
 import { Input } from '@/shared/ui/Input/Input'
-import mailImg from '@/shared/assets/mail.png'
+import mailImg from '@/shared/assets/mail.png' 
 import { NavBarLoggedIn } from '@/widgets/NavBar/NavBarLoggedIn'
 
 import { useState, useEffect } from 'react'
 
 import { getUser } from '@/entities/user/api/getUser'
-import { getKeywords } from '@/entities/keyword/api/getKeywords' 
-import type { Subscription } from '@/entities/keyword/api/getKeywords' 
+import { keywordApi } from '@/entities/keyword/api/keywordApi'
+import type { Keyword } from '@/entities/keyword/model/type'
+
 import { InitialInfoModal } from '@/features/user-init/ui/InitialInfoModal'
 
 const HomePage = () => {
   const [showModal, setShowModal] = useState(false)
-  const [keywords, setKeywords] = useState<Subscription[]>([])
+  const [searchResults, setSearchResults] = useState<Keyword[]>([]) 
+
+  const handleSearch = async (value:string) => {
+    if (!value.trim()) return
+    
+    try {
+      const response = await keywordApi.searchKeywords({ keyword: value })
+      setSearchResults(response.data.keywords)
+      console.log('검색 결과:', response.data.keywords)
+    } catch (error: any) {
+      if (error.response?.status===400) {
+        alert('키워드 입력이 잘못되었습니다.')
+      } else {
+        alert('검색 중 오류가 발생했습니다.')
+      }
+    }
+  }
 
   useEffect(() => {
     // 유저 정보 조회
@@ -26,17 +43,8 @@ const HomePage = () => {
       .catch((error) => {
         console.error('유저 정보를 불러오는 데 실패했습니다.', error)
       })
-
-    // 키워드 목록 조회
-    getKeywords()
-      .then((data) => {
-        setKeywords(data)
-      })
-      .catch((error) => {
-        console.error('키워드 목록을 불러오는 데 실패했습니다.', error)
-      })
   }, [])
-
+  
   return (
     <>
       <div className={styles.root}>
@@ -53,33 +61,46 @@ const HomePage = () => {
 
         <div className={styles.keywordRow}>
           <p>인기 키워드</p>
-          <Button size='s' typeStyle='type1'>
-            블록체인
-          </Button>
-          <Button size='s' typeStyle='type1'>
-            주식투자
-          </Button>
-          <Button size='s' typeStyle='type1'>
-            파이어족
-          </Button>
-          <Button size='s' typeStyle='type1'>
-            테슬라
-          </Button>
+          <Button size='s' typeStyle='type1'>블록체인</Button>
+          <Button size='s' typeStyle='type1'>주식투자</Button>
+          <Button size='s' typeStyle='type1'>파이어족</Button>
+          <Button size='s' typeStyle='type1'>테슬라</Button>
         </div>
 
-        <div className={styles.keywordRow}>
-          <p>구독중인 키워드</p>
-          {keywords.length > 0 ? (
-            keywords.map((item) => (
-              <Button key={item.subscriptionId} size='s' typeStyle='type1'>
-                {item.keywordInfo.keyword}
-              </Button>
-            ))
-          ) : (
-            <span className={styles.emptyText}>구독 중인 키워드가 없습니다.</span>
+        <div className={styles.searchContainer}>
+          <div className={styles.searchWrap}>
+            <Input placeholder='검색할 키워드를 입력해보세요' onSubmit={handleSearch} />
+          </div>
+          
+          {/* 검색 결과 리스트 */}
+          {searchResults.length > 0 && (
+            <div className={styles.searchResultSection}>
+              <ul className={styles.searchList}>
+                {searchResults.map((item) => (
+                  <li key={item.id} className={styles.searchItem}>
+                    <span className={styles.keywordName}>{item.name}</span>
+                    <span className={styles.subStatus}>
+                      {item.isSubscribed ? '(구독중)' : '(미구독)'}
+                    </span>
+                    <Button 
+                      size='s' 
+                      typeStyle={item.isSubscribed ? 'type2' : 'type1'}
+                      onClick={() => {
+                        if (item.isSubscribed) {
+                          alert(`'${item.name}' 키워드 구독을 해제합니다.`)
+                        } else {
+                          alert(`'${item.name}' 키워드 구독을 신청합니다.`)
+                        }
+                      }}
+                    >
+                       {item.isSubscribed ? '해제' : '구독'}
+                    </Button>
+                  </li>
+                ))}
+              </ul>
+            </div>
           )}
         </div>
-        <Input />
       </div>
 
       {showModal && (
