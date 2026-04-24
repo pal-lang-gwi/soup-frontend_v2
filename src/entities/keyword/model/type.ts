@@ -18,3 +18,22 @@ export interface Keyword {
     page?: number;     // 기본값 0
     size?: number;     // 기본값 20
   }
+
+  export interface KeywordListParams {
+    page?: number;    
+    size?: number;     
+    sort?: string;    
+  }
+  
+  export interface KeywordDto {
+    id: number;               
+    name: string;              
+    normalizedName: string;   
+  }
+  
+  export interface KeywordListResponseData {
+    keywordResponseDtos: KeywordDto[]; 
+    totalElements: number;             
+    totalPages: number;               
+    currentPage: number;              
+  }
