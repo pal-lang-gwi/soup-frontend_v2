@@ -26,7 +26,7 @@ export interface Keyword {
   }
   
 
-  // === 시스템 키워드 목록 조회 (GET /api/v1/keywords) ===
+  // 시스템 키워드 목록 조회 
 export interface KeywordDto {
     id: number;               
     name: string;              
@@ -57,4 +57,20 @@ export interface KeywordDto {
     totalElements: number;
     totalPages: number;
     currentPage: number;
+  }
+
+  //  키워드 구독
+export interface SubscribeKeywordRequest {
+    keywordId: number;
+  }
+  
+  export interface SubscribeKeywordResponseData {
+    keywordId: number;
+    keywordName: string;
+  }
+  
+  // 키워드 구독 해제
+  export interface UnsubscribeKeywordResponseData {
+    userId: number;
+    keywordName: string;
   }
