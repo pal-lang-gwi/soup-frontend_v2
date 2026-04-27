@@ -25,7 +25,9 @@ export interface Keyword {
     sort?: string;    
   }
   
-  export interface KeywordDto {
+
+  // === 시스템 키워드 목록 조회 (GET /api/v1/keywords) ===
+export interface KeywordDto {
     id: number;               
     name: string;              
     normalizedName: string;   
@@ -36,4 +38,23 @@ export interface Keyword {
     totalElements: number;             
     totalPages: number;               
     currentPage: number;              
+  }
+  
+  // 내 키워드 목록 조회 
+  export interface MyKeywordInfo {
+    keywordId: number;
+    keyword: string;
+    registeredAt: number[]; 
+  }
+  
+  export interface MyKeywordDto {
+    subscriptionId: number;
+    keywordInfo: MyKeywordInfo;
+  }
+  
+  export interface MyKeywordListResponseData {
+    myKeywordDtos: MyKeywordDto[];
+    totalElements: number;
+    totalPages: number;
+    currentPage: number;
   }
