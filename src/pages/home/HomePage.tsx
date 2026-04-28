@@ -40,6 +40,7 @@ const HomePage = () => {
   const [myKeywords, setMyKeywords] = useState<MyKeywordDto[]>([])
   const [searchResults, setSearchResults] = useState<SearchKeyword[]>([])
   const [updatingKeywordId, setUpdatingKeywordId] = useState<number | null>(null)
+  const hasSearchResults = searchResults.length > 0
 
   const loadMyKeywords = async () => {
     const size = 100
@@ -156,21 +157,26 @@ const HomePage = () => {
           )}
         </div>
 
-        <div className={styles.searchContainer}>
+        <div className={[
+          styles.searchContainer,
+          hasSearchResults ? styles.searchContainerExpanded : '',
+        ].join(' ')}>
           <div className={styles.searchWrap}>
-            <Input placeholder='검색할 키워드를 입력해보세요' onSubmit={handleSearch} />
+            <Input
+              placeholder='검색할 키워드를 입력해보세요'
+              embedded
+              expanded={hasSearchResults}
+              onSubmit={handleSearch}
+            />
           </div>
           
           {/* 검색 결과 리스트 */}
-          {searchResults.length > 0 && (
+          {hasSearchResults && (
             <div className={styles.searchResultSection}>
               <ul className={styles.searchList}>
                 {searchResults.map((item) => (
                   <li key={item.id} className={styles.searchItem}>
                     <span className={styles.keywordName}>{item.name}</span>
-                    <span className={styles.subStatus}>
-                      {item.isSubscribed ? '(구독중)' : '(미구독)'}
-                    </span>
                     <Button 
                       size='s' 
                       typeStyle={item.isSubscribed ? 'type1' : 'type2'}

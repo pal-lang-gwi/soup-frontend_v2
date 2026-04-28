@@ -67,10 +67,18 @@
 }
 
 .searchContainer {
-  position: relative;
   width: 100%;
-  max-width: 500px;
+  max-width: 600px;
   margin: 40px auto;
+  overflow: hidden;
+  border-radius: 50px;
+  background-color: var(--color-white);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  transition: border-radius 0.18s ease;
+}
+
+.searchContainerExpanded {
+  border-radius: 24px;
 }
 
 .searchWrap {
@@ -80,17 +88,11 @@
 }
 
 .searchResultSection {
-  position: absolute;
-  top: calc(100% + 8px); 
-  left: 0;
   width: 100%;
   background-color: var(--color-white);
-  border: 1px solid var(--color-white);
-  border-radius: 8px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-  z-index: 50; 
+  border-top: 1px solid var(--color-green-mute);
   overflow: hidden;
-  padding: 10px 0;
+  padding: 2px 0 6px;
 }
 
 .searchList {
@@ -102,10 +104,13 @@
 }
 
 .searchItem {
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 15px;
+  gap: 10px;
+  height: 48px;
+  padding: 4px 14px 4px 22px;
   border-bottom: 1px solid var(--color-green-mute);
   transition: background-color 0.2s;
 
@@ -114,20 +119,14 @@
   }
 
   &:hover {
-    background-color: var(--color-white);
+    background-color: rgba(178, 224, 114, 0.12);
   }
 }
 
 .keywordName {
-  font-weight: bold;
+  font-weight: 400;
   font-size: 16px;
   flex-grow: 1;
-}
-
-.subStatus {
-  font-size: 12px;
-  color: var(--color-grey);
-  margin-right: 15px;
 }
 
 .emptyKeyword {
