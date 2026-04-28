@@ -43,18 +43,8 @@ const HomePage = () => {
   const hasSearchResults = searchResults.length > 0
 
   const loadMyKeywords = async () => {
-    const size = 100
-    const firstResponse = await keywordApi.getMyKeywords({ page: 0, size })
-    const totalPages = firstResponse.data.totalPages
-    const restResponses = await Promise.all(
-      Array.from({ length: Math.max(totalPages - 1, 0) }, (_, index) =>
-        keywordApi.getMyKeywords({ page: index + 1, size })
-      )
-    )
-    const nextMyKeywords = [
-      ...firstResponse.data.myKeywordDtos,
-      ...restResponses.flatMap((response) => response.data.myKeywordDtos),
-    ]
+    const response = await keywordApi.getMyKeywords({ page: 0, size: 20 })
+    const nextMyKeywords = response.data.myKeywordDtos
 
     setMyKeywords(nextMyKeywords)
     setSearchResults((prev) => mergeWithMyKeywords(prev, nextMyKeywords))
