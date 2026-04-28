@@ -29,6 +29,15 @@ export const keywordApi = {
     return response.data;
   },
 
+  // 내 키워드 목록 조회
+  getMyKeywords: async (params?: KeywordListParams) => {
+    const response = await apiClient.get<ApiResponse<MyKeywordListResponseData>>(
+      '/users/me/keywords',
+      { params }
+    );
+    return response.data;
+  },
+
   // 키워드 구독
   subscribeKeyword: async (data: SubscribeKeywordRequest) => {
     const response = await apiClient.post<ApiResponse<SubscribeKeywordResponseData>>(
