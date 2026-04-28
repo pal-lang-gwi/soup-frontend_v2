@@ -8,27 +8,98 @@ import { useState, useEffect } from 'react'
 
 import { getUser } from '@/entities/user/api/getUser'
 import { keywordApi } from '@/entities/keyword/api/keywordApi'
-import type { Keyword } from '@/entities/keyword/model/type'
+import type { Keyword, MyKeywordDto } from '@/entities/keyword/model/type'
 
 import { InitialInfoModal } from '@/features/user-init/ui/InitialInfoModal'
 
+type SearchKeyword = Keyword & {
+  subscriptionId?: number
+}
+
+const mergeWithMyKeywords = (
+  keywords: Keyword[],
+  myKeywords: MyKeywordDto[]
+): SearchKeyword[] => {
+  const subscriptionMap = new Map(
+    myKeywords.map((item) => [item.keywordInfo.keywordId, item.subscriptionId])
+  )
+
+  return keywords.map((keyword) => {
+    const subscriptionId = subscriptionMap.get(keyword.id)
+
+    return {
+      ...keyword,
+      isSubscribed: subscriptionId !== undefined,
+      subscriptionId,
+    }
+  })
+}
+
 const HomePage = () => {
   const [showModal, setShowModal] = useState(false)
-  const [searchResults, setSearchResults] = useState<Keyword[]>([]) 
+  const [myKeywords, setMyKeywords] = useState<MyKeywordDto[]>([])
+  const [searchResults, setSearchResults] = useState<SearchKeyword[]>([])
+  const [updatingKeywordId, setUpdatingKeywordId] = useState<number | null>(null)
+
+  const loadMyKeywords = async () => {
+    const size = 100
+    const firstResponse = await keywordApi.getMyKeywords({ page: 0, size })
+    const totalPages = firstResponse.data.totalPages
+    const restResponses = await Promise.all(
+      Array.from({ length: Math.max(totalPages - 1, 0) }, (_, index) =>
+        keywordApi.getMyKeywords({ page: index + 1, size })
+      )
+    )
+    const nextMyKeywords = [
+      ...firstResponse.data.myKeywordDtos,
+      ...restResponses.flatMap((response) => response.data.myKeywordDtos),
+    ]
+
+    setMyKeywords(nextMyKeywords)
+    setSearchResults((prev) => mergeWithMyKeywords(prev, nextMyKeywords))
+
+    return nextMyKeywords
+  }
 
   const handleSearch = async (value:string) => {
     if (!value.trim()) return
     
     try {
       const response = await keywordApi.searchKeywords({ keyword: value })
-      setSearchResults(response.data.keywords)
-      console.log('검색 결과:', response.data.keywords)
+      setSearchResults(mergeWithMyKeywords(response.data.keywords, myKeywords))
     } catch (error: any) {
       if (error.response?.status===400) {
         alert('키워드 입력이 잘못되었습니다.')
       } else {
         alert('검색 중 오류가 발생했습니다.')
       }
+    }
+  }
+
+  const handleToggleSubscription = async (keyword: SearchKeyword) => {
+    if (updatingKeywordId !== null) return
+
+    try {
+      setUpdatingKeywordId(keyword.id)
+
+      if (keyword.isSubscribed) {
+        if (!keyword.subscriptionId) {
+          await loadMyKeywords()
+          alert('구독 정보를 다시 불러왔습니다. 한 번 더 시도해주세요.')
+          return
+        }
+
+        await keywordApi.unsubscribeKeyword(keyword.subscriptionId)
+      } else {
+        await keywordApi.subscribeKeyword({ keywordId: keyword.id })
+      }
+
+      await loadMyKeywords()
+    } catch (error) {
+      console.error('키워드 구독 상태 변경에 실패했습니다.', error)
+      alert('구독 상태 변경 중 오류가 발생했습니다.')
+    } finally {
+      setUpdatingKeywordId(null)
     }
   }
 
@@ -42,6 +113,11 @@ const HomePage = () => {
       })
       .catch((error) => {
         console.error('유저 정보를 불러오는 데 실패했습니다.', error)
+      })
+
+    loadMyKeywords()
+      .catch((error) => {
+        console.error('내 키워드 목록을 불러오는 데 실패했습니다.', error)
       })
   }, [])
   
@@ -67,6 +143,19 @@ const HomePage = () => {
           <Button size='s' typeStyle='type1'>테슬라</Button>
         </div>
 
+        <div className={styles.keywordRow}>
+          <p>구독중인 키워드</p>
+          {myKeywords.length > 0 ? (
+            myKeywords.map((item) => (
+              <Button key={item.subscriptionId} size='s' typeStyle='type1'>
+                {item.keywordInfo.keyword}
+              </Button>
+            ))
+          ) : (
+            <span className={styles.emptyKeyword}>아직 구독한 키워드가 없어요</span>
+          )}
+        </div>
+
         <div className={styles.searchContainer}>
           <div className={styles.searchWrap}>
             <Input placeholder='검색할 키워드를 입력해보세요' onSubmit={handleSearch} />
@@ -84,16 +173,11 @@ const HomePage = () => {
                     </span>
                     <Button 
                       size='s' 
-                      typeStyle={item.isSubscribed ? 'type2' : 'type1'}
-                      onClick={() => {
-                        if (item.isSubscribed) {
-                          alert(`'${item.name}' 키워드 구독을 해제합니다.`)
-                        } else {
-                          alert(`'${item.name}' 키워드 구독을 신청합니다.`)
-                        }
-                      }}
+                      typeStyle={item.isSubscribed ? 'type1' : 'type2'}
+                      disabled={updatingKeywordId === item.id}
+                      onClick={() => handleToggleSubscription(item)}
                     >
-                       {item.isSubscribed ? '해제' : '구독'}
+                       {item.isSubscribed ? '구독 해제' : '구독'}
                     </Button>
                   </li>
                 ))}
