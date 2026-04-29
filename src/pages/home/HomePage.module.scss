@@ -37,6 +37,7 @@
   height: 210px;
   position: absolute;
   right: 200px;
+  z-index: -1;
 }
 
 .title1 {
@@ -57,4 +58,79 @@
   gap: 10px;
   flex-wrap: wrap;
   justify-content: center;
+  align-items: center;
+
+  p {
+    margin-right: 15px;
+    font-weight: bold;
+    font-size: 18px;
+  }
+}
+
+.searchContainer {
+  width: 100%;
+  max-width: 600px;
+  margin: 40px auto;
+  overflow: hidden;
+  border-radius: 50px;
+  background-color: var(--color-white);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  transition: border-radius 0.18s ease;
+}
+
+.searchContainerExpanded {
+  border-radius: 24px;
+}
+
+.searchWrap {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.searchResultSection {
+  width: 100%;
+  background-color: var(--color-white);
+  border-top: 1px solid var(--color-green-mute);
+  overflow: hidden;
+  padding: 2px 0 6px;
+}
+
+.searchList {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.searchItem {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  height: 48px;
+  padding: 4px 14px 4px 22px;
+  border-bottom: 1px solid var(--color-green-mute);
+  transition: background-color 0.2s;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background-color: rgba(178, 224, 114, 0.12);
+  }
+}
+
+.keywordName {
+  font-weight: 400;
+  font-size: 16px;
+  flex-grow: 1;
+}
+
+.emptyKeyword {
+  font-size: 14px;
+  color: var(--color-grey);
 }
