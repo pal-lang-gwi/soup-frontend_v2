@@ -1,7 +1,9 @@
-import { useState, useCallback, useRef } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
 import { Button } from '@/shared/ui/Button/Button'
 import styles from './MyPage.module.scss'
 import { NavBarLoggedIn } from '@/widgets/NavBar/NavBarLoggedIn'
+import { keywordApi } from '@/entities/keyword/api/keywordApi'
+import type { MyKeywordDto } from '@/entities/keyword/model/type'
 
 const NICKNAME_MIN_LENGTH = 3
 const NICKNAME_MAX_LENGTH = 12
@@ -12,10 +14,17 @@ const MyPage = () => {
     value: '뉴스매니아',
     error: ''
   })
-  const [keywords, setKeywords] = useState(['AI', '경제', '스타트업', '기술'])
+  const [myKeywords, setMyKeywords] = useState<MyKeywordDto[]>([])
+  const [isKeywordLoading, setIsKeywordLoading] = useState(true)
+  const [updatingSubscriptionId, setUpdatingSubscriptionId] = useState<number | null>(null)
   const [profileImgError, setProfileImgError] = useState(false)
   const [profileImage, setProfileImage] = useState<string>('/sample-profile.jpg')
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const loadMyKeywords = useCallback(async () => {
+    const response = await keywordApi.getMyKeywords({ page: 0, size: 20 })
+    setMyKeywords(response.data.myKeywordDtos)
+  }, [])
 
   const handleNicknameChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
@@ -36,10 +45,26 @@ const MyPage = () => {
     }
   }, [nicknameState])
 
-  const handleRemoveKeyword = useCallback((keyword: string) => {
-    setKeywords(prev => prev.filter(k => k !== keyword))
-    console.log('키워드 삭제:', keyword)
-  }, [])
+  const handleRemoveKeyword = useCallback(async (keyword: MyKeywordDto) => {
+    if (updatingSubscriptionId !== null) return
+
+    const keywordName = keyword.keywordInfo.keyword
+    const isConfirmed = window.confirm(`'${keywordName}' 키워드 구독을 취소하시겠습니까?`)
+
+    if (!isConfirmed) return
+
+    try {
+      setUpdatingSubscriptionId(keyword.subscriptionId)
+      await keywordApi.unsubscribeKeyword(keyword.subscriptionId)
+      await loadMyKeywords()
+      alert(`'${keywordName}' 키워드 구독이 취소되었습니다.`)
+    } catch (error) {
+      console.error('키워드 구독 해제에 실패했습니다.', error)
+      alert(`'${keywordName}' 키워드 구독 취소에 실패했습니다.`)
+    } finally {
+      setUpdatingSubscriptionId(null)
+    }
+  }, [loadMyKeywords, updatingSubscriptionId])
 
   const handleImageChange = useCallback(() => {
     fileInputRef.current?.click()
@@ -85,6 +110,15 @@ const MyPage = () => {
   const handleImageError = useCallback(() => {
     setProfileImgError(true)
   }, [])
+
+  useEffect(() => {
+    loadMyKeywords()
+      .catch((error) => {
+        console.error('내 키워드 목록을 불러오는 데 실패했습니다.', error)
+        alert('구독 중인 키워드를 불러오지 못했습니다.')
+      })
+      .finally(() => setIsKeywordLoading(false))
+  }, [loadMyKeywords])
 
   return (
     <div className={styles.root}>
@@ -196,16 +230,19 @@ const MyPage = () => {
         </div>
 
         <div className={styles.keywordChip}>
-          {keywords.length > 0 ? (
-            keywords.map((keyword) => (
+          {isKeywordLoading ? (
+            <p className={styles.emptyMessage}>구독 중인 키워드를 불러오는 중입니다.</p>
+          ) : myKeywords.length > 0 ? (
+            myKeywords.map((keyword) => (
               <Button
-                key={keyword}
+                key={keyword.subscriptionId}
                 size="s"
                 typeStyle="type2"
                 close
+                disabled={updatingSubscriptionId === keyword.subscriptionId}
                 onClick={() => handleRemoveKeyword(keyword)}
               >
-                {keyword}
+                {keyword.keywordInfo.keyword}
               </Button>
             ))
           ) : (
