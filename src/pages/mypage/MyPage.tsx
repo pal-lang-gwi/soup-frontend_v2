@@ -215,48 +215,6 @@ const MyPage = () => {
 
           <div className={styles.profileColumn}>
             {/* 프로필 이미지 */}
-            <div className={styles.profileImgOverlayContainer}>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                onChange={handleFileSelect}
-                className={styles.fileInput}
-                aria-label="프로필 이미지 파일 선택"
-              />
-              {!profileImgError && profileImage ? (
-                <img
-                  src={profileImage}
-                  className={styles.profileImg}
-                  alt="프로필 이미지"
-                  onError={handleImageError}
-                />
-              ) : (
-                <div className={styles.profileImgPlaceholder}>
-                  <svg 
-                    width="60" 
-                    height="60" 
-                    viewBox="0 0 24 24" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    strokeWidth="2"
-                  >
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                    <circle cx="12" cy="7" r="4" />
-                  </svg>
-                </div>
-              )}
-
-              <button
-                className={styles.overlay}
-                onClick={handleImageChange}
-                aria-label="프로필 사진 변경하기"
-                type="button"
-              >
-                <span className={styles.changeText}>사진 변경하기</span>
-              </button>
-            </div>
-
             {/* 닉네임 */}
             <div className={styles.nicknameWrapper}>
               <label htmlFor="nickname-input" className={styles.label}>
