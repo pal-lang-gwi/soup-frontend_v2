@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { Button } from '@/shared/ui/Button/Button'
 import styles from './MyPage.module.scss'
 import { NavBarLoggedIn } from '@/widgets/NavBar/NavBarLoggedIn'
@@ -10,7 +10,6 @@ import { checkNickname, getUser, updateUser } from '@/entities/user/api/getUser'
 
 const NICKNAME_MIN_LENGTH = 2
 const NICKNAME_MAX_LENGTH = 20
-const MAX_IMAGE_SIZE = 5 * 1024 * 1024 // 5MB
 
 const MyPage = () => {
   const [nicknameState, setNicknameState] = useState({
@@ -23,9 +22,6 @@ const MyPage = () => {
   const [isUserLoading, setIsUserLoading] = useState(true)
   const [isNicknameSubmitting, setIsNicknameSubmitting] = useState(false)
   const [updatingSubscriptionId, setUpdatingSubscriptionId] = useState<number | null>(null)
-  const [profileImgError, setProfileImgError] = useState(false)
-  const [profileImage, setProfileImage] = useState<string>('')
-  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const loadMyKeywords = useCallback(async () => {
     const response = await keywordApi.getMyKeywords({ page: 0, size: 20 })
@@ -84,11 +80,6 @@ const MyPage = () => {
         error: ''
       })
 
-      if (updatedUser.profileImageUrl) {
-        setProfileImage(updatedUser.profileImageUrl)
-        setProfileImgError(false)
-      }
-
       alert('닉네임이 변경되었습니다.')
     } catch (error) {
       console.error('닉네임 변경에 실패했습니다.', error)
@@ -119,51 +110,6 @@ const MyPage = () => {
     }
   }, [loadMyKeywords, updatingSubscriptionId])
 
-  const handleImageChange = useCallback(() => {
-    fileInputRef.current?.click()
-  }, [])
-
-  const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-
-    // 파일 타입 검증
-    if (!file.type.startsWith('image/')) {
-      alert('이미지 파일만 업로드 가능합니다.')
-      return
-    }
-
-    // 파일 크기 검증
-    if (file.size > MAX_IMAGE_SIZE) {
-      alert('파일 크기는 5MB 이하여야 합니다.')
-      return
-    }
-
-    // 파일 미리보기 생성
-    const reader = new FileReader()
-    reader.onloadend = () => {
-      if (reader.result) {
-        setProfileImage(reader.result as string)
-        setProfileImgError(false)
-        console.log('이미지 변경:', file.name)
-        // 여기서 API 호출하여 서버에 업로드할 수 있습니다
-      }
-    }
-    reader.onerror = () => {
-      alert('파일을 읽는 중 오류가 발생했습니다.')
-    }
-    reader.readAsDataURL(file)
-
-    // input 초기화 (같은 파일을 다시 선택할 수 있도록)
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ''
-    }
-  }, [])
-
-  const handleImageError = useCallback(() => {
-    setProfileImgError(true)
-  }, [])
-
   useEffect(() => {
     getUser()
       .then((user) => {
@@ -174,11 +120,6 @@ const MyPage = () => {
           value: nickname,
           error: ''
         })
-
-        if (user.profileImageUrl) {
-          setProfileImage(user.profileImageUrl)
-          setProfileImgError(false)
-        }
       })
       .catch((error) => {
         console.error('사용자 정보를 불러오는 데 실패했습니다.', error)
