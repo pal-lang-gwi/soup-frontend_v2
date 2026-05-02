@@ -1,23 +1,28 @@
 export interface NewsDtos {
     keyword: string;
+    keywordName?: string;
     longSummary: string;
-    createdDate: string;
+    createdDate: string | number[];
     articles: Article[];
+    relatedKeywords?: string[];
 }
 
-export interface NewsListResponse{
+export interface NewsListResponseData {
+  newsDtos: NewsDtos[];
+  totalElements: number;
+  totalPages: number;
+  currentPage: number;
+}
+
+export interface NewsListResponse {
     success: boolean;
-    data: {
-        newsDtos: NewsDtos[];
-        totalElements: number;
-        totalPages: number;
-        currentPage: number;
-    }
+    data: NewsListResponseData;
 }
 
 export interface Article {
-  id: number
+  id?: number
   title: string
   summary: string
-  image: string
+  image?: string
+  url?: string
 }
