@@ -126,13 +126,13 @@ const HomePage = () => {
           </div>
         </div>
 
-        <div className={styles.keywordRow}>
+        {/* <div className={styles.keywordRow}>
           <p>인기 키워드</p>
           <Button size='s' typeStyle='type1'>블록체인</Button>
           <Button size='s' typeStyle='type1'>주식투자</Button>
           <Button size='s' typeStyle='type1'>파이어족</Button>
           <Button size='s' typeStyle='type1'>테슬라</Button>
-        </div>
+        </div> */}
 
         <div className={styles.keywordRow}>
           <p>구독중인 키워드</p>
