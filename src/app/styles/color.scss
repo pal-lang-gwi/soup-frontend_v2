@@ -1,9 +1,12 @@
 $white: #ffffff;
 $light-grey: #909090;
+$grey: #68736d;
 $black: #000000;
 $green-neon: #e1faab;
 $green-mute: #eaf0dd;
 $green-dark: #cee49f;
+$green-darker: #c2d597;
+$green: #14785b;
 
 $gradient1: radial-gradient(
   ellipse at 70% 60%,
@@ -15,11 +18,15 @@ $gradient1: radial-gradient(
 :root {
   --color-white: #{$white};
   --color-light-grey: #{$light-grey};
+  --color-grey: #{$grey};
   --color-black: #{$black};
 
   --color-green-neon: #{$green-neon};
   --color-green-mute: #{$green-mute};
   --color-green-dark: #{$green-dark};
+  --color-green-darker: #{$green-darker};
+  --color-green: #{$green};
+
 
   --gradient1: #{$gradient1};
 
@@ -30,5 +37,5 @@ $gradient1: radial-gradient(
   --btn2-border: var(--color-green-neon);
 
   --btn3-bg: var(--color-green-dark);
-  --btn3-border: #c2d597;
+  --btn3-border: var(--color-green-darker);
 }
