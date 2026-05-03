@@ -1,0 +1,279 @@
+:global(html),
+:global(body),
+:global(#root) {
+  width: 100%;
+  min-width: 100%;
+  margin: 0;
+  background: var(--color-white);
+}
+
+.root {
+  width: 100%;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-white);
+  color: var(--color-black);
+  overflow-x: hidden;
+}
+
+.content {
+  flex: 1;
+  width: min(1080px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: 64px 0 88px;
+}
+
+.status {
+  min-height: 420px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--color-grey);
+  font-size: 16px;
+}
+
+.header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+  width: 100%;
+  margin: 0 auto;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #dfe7dd;
+}
+
+.label {
+  margin: 0 0 14px;
+  color: var(--color-green);
+  font-size: 13px;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.title {
+  margin: 0;
+  font-size: 42px;
+  line-height: 1.18;
+  font-weight: 800;
+}
+
+.date {
+  flex: 0 0 auto;
+  margin-right: 24px;
+  margin-bottom: 0;
+  color: var(--color-grey);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.bodyGrid {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 0.78fr) minmax(400px, 1fr);
+  gap: clamp(28px, 4vw, 52px);
+  align-items: start;
+  padding: 48px 0 28px;
+}
+
+.summarySection,
+.articleSection {
+  position: relative;
+  z-index: 1;
+}
+
+.summarySection {
+  padding-left: 0;
+}
+
+.pillLabel {
+  width: fit-content;
+  margin-bottom: 24px;
+  pointer-events: none;
+}
+
+.summary {
+  margin: 0;
+  max-width: 500px;
+  color: var(--color-grey);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.85;
+  white-space: pre-line;
+}
+
+.articleSection {
+  padding-top: 0;
+}
+
+.sectionTitle {
+  margin: 0 0 22px;
+  font-size: 26px;
+  line-height: 1.25;
+  font-weight: 800;
+}
+
+.articleList {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.article {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 16px 20px;
+  background: #fff;
+  border: 3px solid var(--color-green-mute);
+  border-radius: 8px;
+  box-shadow: 0 10px 28px rgba(26, 39, 31, 0.04);
+}
+
+.articleTitle {
+  margin: 0 0 8px;
+  font-size: 16px;
+  line-height: 1.45;
+  font-weight: 800;
+}
+
+.articleTitle a {
+  color: var(--color-black);
+  text-decoration: none;
+}
+
+.articleTitle a:hover {
+  color:var(--color-green);
+  text-decoration: underline;
+}
+
+.articleSummary {
+  margin: 0;
+  color: var(--color-grey);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.articleLink {
+  width: fit-content;
+  color: var(--color-green);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.articleLink:hover {
+  text-decoration: underline;
+}
+
+.decorMailLeft,
+.decorMailRight {
+  position: absolute;
+  z-index: 0;
+  width: clamp(220px, 24vw, 420px);
+  opacity: 0.16;
+  filter: saturate(0.8);
+  pointer-events: none;
+  user-select: none;
+}
+
+.decorMailLeft {
+  left: -64px;
+  bottom: -84px;
+  transform: rotate(12deg);
+}
+
+.decorMailRight {
+  right: 30px;
+  top: 280px;
+  bottom: auto;
+  width: clamp(190px, 20vw, 330px);
+  transform: rotate(-18deg);
+}
+
+.keywordList { 
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 30px;
+}
+
+.keyword {
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: var(--color-white);
+  color: var(--color-green-mute);;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+@media (max-width: 640px) {
+  .content {
+    width: min(100% - 32px, 1080px);
+    padding: 44px 0 56px;
+  }
+
+  .header {
+    display: block;
+    padding-bottom: 28px;
+  }
+
+  .title {
+    font-size: 34px;
+  }
+
+  .date {
+    display: block;
+    margin-right: 0;
+    margin-top: 14px;
+  }
+
+  .bodyGrid {
+    display: block;
+    padding: 42px 0 20px;
+  }
+
+  .summarySection {
+    padding-left: 0;
+  }
+
+  .pillLabel {
+    min-width: 118px;
+    height: 44px;
+    margin-bottom: 24px;
+    padding: 0 24px;
+    font-size: 15px;
+  }
+
+  .summary {
+    font-size: 16px;
+    line-height: 1.9;
+  }
+
+  .articleSection {
+    margin-top: 44px;
+  }
+
+  .article {
+    min-height: 0;
+    padding: 16px;
+  }
+
+  .articleList {
+    gap: 18px;
+  }
+
+  .decorMailLeft,
+  .decorMailRight {
+    display: none;
+  }
+
+}
