@@ -8,7 +8,7 @@ import { Button } from '@/shared/ui/Button/Button'
 import mailImg from '@/shared/assets/mail.png'
 import styles from './MailPage.module.scss'
 
-type LoadState = 'idle' | 'loading' | 'success' | 'empty' | 'error'
+type LoadState = 'idle' | 'loading' | 'success' | 'empty' | 'noParams' | 'error'
 
 const normalizeKeyword = (value: string) => value.trim().toLowerCase()
 
@@ -27,6 +27,8 @@ const formatDate = (value?: string | number[]) => {
 
 const MailPage = () => {
   const [searchParams] = useSearchParams()
+  const hasKeywordParam = searchParams.has('keyword')
+  const hasDateParam = searchParams.has('date')
   const keyword = searchParams.get('keyword') ?? ''
   const date = searchParams.get('date') ?? ''
   const [news, setNews] = useState<NewsDtos | null>(null)
@@ -38,8 +40,8 @@ const MailPage = () => {
   }, [keyword, news])
 
   useEffect(() => {
-    if (!keyword || !date) {
-      setLoadState('empty')
+    if (!hasKeywordParam || !hasDateParam || !keyword.trim() || !date.trim()) {
+      setLoadState('noParams')
       setNews(null)
       return
     }
@@ -69,7 +71,7 @@ const MailPage = () => {
     }
 
     loadNews()
-  }, [keyword, date])
+  }, [hasKeywordParam, hasDateParam, keyword, date])
 
   return (
     <div className={styles.root}>
@@ -86,6 +88,10 @@ const MailPage = () => {
 
         {loadState === 'empty' && (
           <div className={styles.status}>메일 링크에 맞는 뉴스를 찾지 못했어요.</div>
+        )}
+
+        {loadState === 'noParams' && (
+          <div className={styles.status}>메일 링크에 필요한 뉴스 정보가 없어요.</div>
         )}
 
         {loadState === 'success' && news && (
