@@ -50,12 +50,23 @@ const MailPage = () => {
       try {
         setLoadState('loading')
 
-        const data = await newsApi.getDailyNews({
-          startDate: date,
-          endDate: date,
-          size: 50,
-        })
-        const matchedNews = data.newsDtos.find((item) => {
+        let page = 0
+        let totalPages = 1
+        const allNews: NewsDtos[] = []
+
+        while (page < totalPages) {
+          const data = await newsApi.getDailyNews({
+            startDate: date,
+            endDate: date,
+            page,
+          })
+
+          allNews.push(...data.newsDtos)
+          totalPages = data.totalPages
+          page += 1
+        }
+
+        const matchedNews = allNews.find((item) => {
           const itemKeyword = item.keywordName ?? item.keyword
 
           return normalizeKeyword(itemKeyword) === normalizeKeyword(keyword)
