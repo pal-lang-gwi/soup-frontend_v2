@@ -1,18 +1,18 @@
 @use '../../app/styles/color.scss' as *;
 
 .root {
-  min-height: 100%;
+  width: 100%;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 .main {
   position: relative;
   width: 100%;
-  min-height: calc(100vh - 84px);
-  padding-bottom: 120px;
+  min-height: 100dvh;
+  padding-bottom: 40px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -229,8 +229,8 @@
 
 @media (max-width: 768px) {
   .main {
-    min-height: calc(100vh - 70px);
-    padding: 0 24px 96px;
+    min-height: 100dvh;
+    padding: 0 24px 32px;
   }
 
   .backgroundMail {
