@@ -4,9 +4,22 @@ import styles from './NewsPage.module.scss'
 import { NavBarLoggedIn } from '@/widgets/NavBar/NavBarLoggedIn'
 import mailImg from '@/shared/assets/mail.png'
 import { Button } from '@/shared/ui/Button/Button'
-import type { Article, NewsDtos } from '@/types/news'
 
-const newsBlock: NewsDtos = {
+interface NewsPageArticle {
+  id: number
+  title: string
+  summary: string
+  image: string
+}
+
+interface NewsPageBlock {
+  keyword: string
+  longSummary: string
+  createdDate: string
+  articles: NewsPageArticle[]
+}
+
+const newsBlock: NewsPageBlock = {
   keyword: 'AI',
   longSummary:
     "대한민국 정부는 9월 2회 국무회의에서 대통령 직속 '국가인공지능위원회' 설치...",
@@ -20,7 +33,7 @@ const newsBlock: NewsDtos = {
 }
 
 const NewsPage = () => {
-  const [selectedArticle, setSelectedArticle] = useState<Article | null>(null)
+  const [selectedArticle, setSelectedArticle] = useState<NewsPageArticle | null>(null)
   const [keyword, setKeyword] = useState('')
   const debounceRef = useRef<number | null>(null)
   const navigate = useNavigate()
@@ -60,7 +73,7 @@ const NewsPage = () => {
   }, [selectedArticle])
 
   // 카드 선택
-  const handleSelectArticle = useCallback((article: Article) => {
+  const handleSelectArticle = useCallback((article: NewsPageArticle) => {
     setSelectedArticle(article)
   }, [])
 

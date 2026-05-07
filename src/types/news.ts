@@ -3,7 +3,7 @@ export interface NewsDtos {
     keywordName?: string;
     longSummary: string;
     createdDate: string | number[];
-    articles: Article[];
+    articles: MailArticle[];
     relatedKeywords?: string[];
 }
 
@@ -19,10 +19,8 @@ export interface NewsListResponse {
     data: NewsListResponseData;
 }
 
-export interface Article {
-  id?: number
+export interface MailArticle {
   title: string
   summary: string
-  image?: string
   url?: string
 }
