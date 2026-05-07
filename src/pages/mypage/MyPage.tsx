@@ -11,6 +11,18 @@ import { checkNickname, getUser, updateUser } from '@/entities/user/api/getUser'
 const NICKNAME_MIN_LENGTH = 2
 const NICKNAME_MAX_LENGTH = 20
 
+type KeywordModalState =
+  | {
+      type: 'confirm'
+      keyword: MyKeywordDto
+    }
+  | {
+      type: 'notice'
+      title: string
+      message: string
+    }
+  | null
+
 const MyPage = () => {
   const [nicknameState, setNicknameState] = useState({
     value: '',
@@ -22,6 +34,7 @@ const MyPage = () => {
   const [isUserLoading, setIsUserLoading] = useState(true)
   const [isNicknameSubmitting, setIsNicknameSubmitting] = useState(false)
   const [updatingSubscriptionId, setUpdatingSubscriptionId] = useState<number | null>(null)
+  const [keywordModal, setKeywordModal] = useState<KeywordModalState>(null)
 
   const loadMyKeywords = useCallback(async () => {
     const response = await keywordApi.getMyKeywords({ page: 0, size: 20 })
@@ -92,23 +105,44 @@ const MyPage = () => {
   const handleRemoveKeyword = useCallback(async (keyword: MyKeywordDto) => {
     if (updatingSubscriptionId !== null) return
 
-    const keywordName = keyword.keywordInfo.keyword
-    const isConfirmed = window.confirm(`'${keywordName}' 키워드 구독을 취소하시겠습니까?`)
+    setKeywordModal({
+      type: 'confirm',
+      keyword
+    })
+  }, [updatingSubscriptionId])
 
-    if (!isConfirmed) return
+  const handleCloseKeywordModal = useCallback(() => {
+    if (updatingSubscriptionId !== null) return
+
+    setKeywordModal(null)
+  }, [updatingSubscriptionId])
+
+  const handleConfirmRemoveKeyword = useCallback(async () => {
+    if (keywordModal?.type !== 'confirm' || updatingSubscriptionId !== null) return
+
+    const keyword = keywordModal.keyword
+    const keywordName = keyword.keywordInfo.keyword
 
     try {
       setUpdatingSubscriptionId(keyword.subscriptionId)
       await keywordApi.unsubscribeKeyword(keyword.subscriptionId)
       await loadMyKeywords()
-      alert(`'${keywordName}' 키워드 구독이 취소되었습니다.`)
+      setKeywordModal({
+        type: 'notice',
+        title: '구독 취소 완료',
+        message: `'${keywordName}' 키워드 구독이 취소되었습니다.`
+      })
     } catch (error) {
       console.error('키워드 구독 해제에 실패했습니다.', error)
-      alert(`'${keywordName}' 키워드 구독 취소에 실패했습니다.`)
+      setKeywordModal({
+        type: 'notice',
+        title: '구독 취소 실패',
+        message: `'${keywordName}' 키워드 구독 취소에 실패했습니다. 잠시 후 다시 시도해주세요.`
+      })
     } finally {
       setUpdatingSubscriptionId(null)
     }
-  }, [loadMyKeywords, updatingSubscriptionId])
+  }, [keywordModal, loadMyKeywords, updatingSubscriptionId])
 
   useEffect(() => {
     getUser()
@@ -230,6 +264,49 @@ const MyPage = () => {
       </main>
 
       <Footer />
+
+      {keywordModal && (
+        <div className={styles.modalBackdrop} role="presentation">
+          <div className={styles.modal} role="dialog" aria-modal="true">
+            <div className={styles.modalTitle}>
+              {keywordModal.type === 'confirm' ? '구독 취소' : keywordModal.title}
+            </div>
+
+            <div className={styles.modalMessage}>
+              {keywordModal.type === 'confirm'
+                ? `'${keywordModal.keyword.keywordInfo.keyword}' 키워드 구독을 취소하시겠습니까?`
+                : keywordModal.message}
+            </div>
+
+            <div className={styles.modalActions}>
+              {keywordModal.type === 'confirm' ? (
+                <>
+                  <Button
+                    size="s"
+                    typeStyle="type1"
+                    onClick={handleCloseKeywordModal}
+                    disabled={updatingSubscriptionId !== null}
+                  >
+                    아니요
+                  </Button>
+                  <Button
+                    size="s"
+                    typeStyle="type2"
+                    onClick={handleConfirmRemoveKeyword}
+                    disabled={updatingSubscriptionId !== null}
+                  >
+                    {updatingSubscriptionId !== null ? '취소 중' : '취소하기'}
+                  </Button>
+                </>
+              ) : (
+                <Button size="s" typeStyle="type2" onClick={handleCloseKeywordModal}>
+                  확인
+                </Button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
