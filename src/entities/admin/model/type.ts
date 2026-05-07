@@ -54,6 +54,7 @@ export interface AdminKeywordListItemDto {
   id: number
   name: string
   normalizedName: string
+  status: AdminKeywordStatus
 }
 
 export interface AdminKeywordListResponseData {

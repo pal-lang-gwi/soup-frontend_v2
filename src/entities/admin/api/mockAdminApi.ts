@@ -24,14 +24,18 @@ const createSuccessResponse = <T>(data: T): ApiResponse<T> => ({
 })
 
 const paginate = <T>(items: T[], page = 0, size = 10) => {
-  const start = page * size
-  const pagedItems = items.slice(start, start + size)
+  const safeSize = Math.max(1, Math.trunc(Number.isFinite(size) ? size : 10))
+  const totalPages = Math.ceil(items.length / safeSize)
+  const maxPage = Math.max(totalPages - 1, 0)
+  const safePage = Math.min(Math.max(0, Math.trunc(Number.isFinite(page) ? page : 0)), maxPage)
+  const start = safePage * safeSize
+  const pagedItems = items.slice(start, start + safeSize)
 
   return {
     items: pagedItems,
     totalElements: items.length,
-    totalPages: Math.ceil(items.length / size),
-    currentPage: page,
+    totalPages,
+    currentPage: safePage,
   }
 }
 
@@ -54,22 +58,27 @@ export const mockAdminApi = {
 
   approveKeywordRequest: async (requestId: number) => {
     const request = keywordRequests.find((item) => item.requestId === requestId)
-    const keywordName = request?.keyword.name ?? '알 수 없는 키워드'
-    const requestedUserCnt = request
-      ? keywordRequests.filter((item) => item.keyword.keywordId === request.keyword.keywordId)
-          .length
-      : 0
+
+    if (!request) {
+      throw new Error('KeywordRequestNotFound')
+    }
+
+    const keywordName = request.keyword.name
+    const requestedUserCnt = keywordRequests.filter(
+      (item) => item.keyword.keywordId === request.keyword.keywordId,
+    ).length
 
     keywordRequests = keywordRequests.filter(
-      (item) => item.keyword.keywordId !== request?.keyword.keywordId,
+      (item) => item.keyword.keywordId !== request.keyword.keywordId,
     )
 
-    if (request && !keywords.some((keyword) => keyword.id === request.keyword.keywordId)) {
+    if (!keywords.some((keyword) => keyword.id === request.keyword.keywordId)) {
       keywords = [
         {
           id: request.keyword.keywordId,
           name: request.keyword.name,
           normalizedName: request.keyword.name.toLowerCase().replaceAll(' ', '-'),
+          status: 'ACTIVE',
         },
         ...keywords,
       ]
@@ -83,7 +92,12 @@ export const mockAdminApi = {
 
   rejectKeywordRequest: async (requestId: number, data: AdminRejectKeywordRequestData) => {
     const request = keywordRequests.find((item) => item.requestId === requestId)
-    const keywordName = request?.keyword.name ?? '알 수 없는 키워드'
+
+    if (!request) {
+      throw new Error('KeywordRequestNotFound')
+    }
+
+    const keywordName = request.keyword.name
 
     keywordRequests = keywordRequests.map((item) =>
       item.requestId === requestId
@@ -105,7 +119,10 @@ export const mockAdminApi = {
   },
 
   getKeywords: async (params?: AdminStatusParams) => {
-    const page = paginate(keywords, params?.page, params?.size)
+    const filteredKeywords = params?.status
+      ? keywords.filter((keyword) => keyword.status === params.status)
+      : keywords
+    const page = paginate(filteredKeywords, params?.page, params?.size)
 
     return createSuccessResponse<AdminKeywordListResponseData>({
       keywordResponseDtos: page.items,
@@ -120,6 +137,7 @@ export const mockAdminApi = {
       id: nextKeywordId(),
       name: data.keyword,
       normalizedName: data.keyword.toLowerCase().replaceAll(' ', '-'),
+      status: 'ACTIVE',
     }
 
     keywords = [keyword, ...keywords]
@@ -132,10 +150,16 @@ export const mockAdminApi = {
   removeKeyword: async (data: AdminRemoveKeywordRequestData) => {
     const keyword = keywords.find((item) => item.id === data.keywordId)
 
-    keywords = keywords.filter((item) => item.id !== data.keywordId)
+    if (!keyword) {
+      throw new Error('KeywordNotFound')
+    }
+
+    keywords = keywords.map((item) =>
+      item.id === data.keywordId ? { ...item, status: 'DELETED' } : item,
+    )
 
     return createSuccessResponse<AdminRemoveKeywordResponseData>({
-      keyword: keyword?.name ?? '알 수 없는 키워드',
+      keyword: keyword.name,
       removeReason: data.removeReason,
     })
   },

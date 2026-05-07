@@ -60,10 +60,10 @@ export const mockKeywordRequests: AdminKeywordRequestDto[] = [
 ]
 
 export const mockKeywords: AdminKeywordListItemDto[] = [
-  { id: 201, name: '생성형 AI', normalizedName: 'generative-ai' },
-  { id: 202, name: 'AI 반도체', normalizedName: 'ai-semiconductor' },
-  { id: 203, name: 'AI 규제', normalizedName: 'ai-regulation' },
-  { id: 204, name: 'AI 서비스', normalizedName: 'ai-service' },
-  { id: 205, name: 'LLM', normalizedName: 'llm' },
-  { id: 206, name: '로봇 자동화', normalizedName: 'robot-automation' },
+  { id: 201, name: '생성형 AI', normalizedName: 'generative-ai', status: 'ACTIVE' },
+  { id: 202, name: 'AI 반도체', normalizedName: 'ai-semiconductor', status: 'ACTIVE' },
+  { id: 203, name: 'AI 규제', normalizedName: 'ai-regulation', status: 'PENDING' },
+  { id: 204, name: 'AI 서비스', normalizedName: 'ai-service', status: 'INACTIVE' },
+  { id: 205, name: 'LLM', normalizedName: 'llm', status: 'REJECTED' },
+  { id: 206, name: '로봇 자동화', normalizedName: 'robot-automation', status: 'DELETED' },
 ]

@@ -121,7 +121,11 @@ export const DashboardView = () => {
           <div className={styles.systemList}>
             {systemStatus.map((item) => (
               <div key={item.name} className={styles.systemRow}>
-                <span className={styles.statusDot} />
+                <span
+                  className={`${styles.statusDot} ${
+                    item.status === '정상' ? styles.successDot : styles.failDot
+                  }`}
+                />
                 <strong>{item.name}</strong>
                 <em className={item.status === '정상' ? styles.normalBadge : styles.warningBadge}>
                   {item.status}

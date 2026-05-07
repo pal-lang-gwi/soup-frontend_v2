@@ -31,6 +31,7 @@ export const AdminSidebar = ({
             type='button'
             className={activeSection === item.id ? styles.activeNavItem : ''}
             onClick={() => onSectionChange(item.id)}
+            aria-label={item.label}
             title={isCollapsed ? item.label : undefined}
           >
             <AdminIcon name={item.icon} />
@@ -39,7 +40,12 @@ export const AdminSidebar = ({
         ))}
       </nav>
 
-      <button type='button' className={styles.collapseButton} onClick={onToggleCollapsed}>
+      <button
+        type='button'
+        className={styles.collapseButton}
+        onClick={onToggleCollapsed}
+        aria-label={isCollapsed ? '메뉴 펼치기' : '메뉴 접기'}
+      >
         <AdminIcon name='menu' />
         {!isCollapsed && <span>메뉴 접기</span>}
       </button>

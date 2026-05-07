@@ -12,6 +12,13 @@ const toneClass: Record<Tone, string> = {
   amber: styles.amber,
 }
 
+const getChangeArrow = (change: string) => {
+  if (change.trim().startsWith('-')) return '↓'
+  if (change.trim().startsWith('0')) return '→'
+
+  return '↑'
+}
+
 export const MetricGrid = ({ items }: MetricGridProps) => {
   return (
     <section className={styles.metricGrid} aria-label='관리자 주요 지표'>
@@ -24,7 +31,7 @@ export const MetricGrid = ({ items }: MetricGridProps) => {
             <p>{item.title}</p>
             <strong>{item.value}</strong>
             <span className={toneClass[item.tone]}>
-              ↑ {item.change} <small>({item.meta})</small>
+              {getChangeArrow(item.change)} {item.change} <small>({item.meta})</small>
             </span>
           </div>
         </article>

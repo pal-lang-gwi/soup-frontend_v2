@@ -51,6 +51,7 @@ export const AdminPagination = ({
         </button>
       </div>
       <select
+        aria-label='페이지당 항목 수'
         value={pageSize}
         onChange={(event) => {
           onPageSizeChange(Number(event.target.value))

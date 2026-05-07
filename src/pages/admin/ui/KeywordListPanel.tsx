@@ -110,8 +110,13 @@ export const KeywordListPanel = () => {
   const handleExportKeywords = () => {
     downloadCsv(
       'admin-keywords.csv',
-      ['키워드 ID', '키워드', '정규화 키워드'],
-      filteredKeywords.map((keyword) => [String(keyword.id), keyword.name, keyword.normalizedName]),
+      ['키워드 ID', '키워드', '정규화 키워드', '상태'],
+      filteredKeywords.map((keyword) => [
+        String(keyword.id),
+        keyword.name,
+        keyword.normalizedName,
+        statusLabel[keyword.status],
+      ]),
     )
   }
 
@@ -173,7 +178,7 @@ export const KeywordListPanel = () => {
                 <th>키워드 ID</th>
                 <th>키워드</th>
                 <th>정규화 키워드</th>
-                <th>현재 필터</th>
+                <th>상태</th>
                 <th>처리</th>
               </tr>
             </thead>
@@ -197,13 +202,9 @@ export const KeywordListPanel = () => {
                     <td>{keyword.name}</td>
                     <td>{keyword.normalizedName}</td>
                     <td>
-                      {keywordStatus === 'all' ? (
-                        <span className={styles.doneText}>전체</span>
-                      ) : (
-                        <span className={`${styles.statusBadge} ${statusClass[keywordStatus]}`}>
-                          {statusLabel[keywordStatus]}
-                        </span>
-                      )}
+                      <span className={`${styles.statusBadge} ${statusClass[keyword.status]}`}>
+                        {statusLabel[keyword.status]}
+                      </span>
                     </td>
                     <td>
                       <button
