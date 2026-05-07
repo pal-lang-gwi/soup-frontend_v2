@@ -8,6 +8,9 @@ on:
 env:
   AWS_REGION: ap-northeast-2
   S3_BUCKET: soupspoon.kr
+  CLOUDFRONT_DOMAIN_NAME: d38on5u64c2dgq.cloudfront.net
+  VITE_API_BASE: https://api.soupspoon.kr/api/v1
+  VITE_GOOGLE_LOGIN_URL: https://api.soupspoon.kr/oauth2/authorization/google
 
 jobs:
   deploy:
@@ -39,7 +42,25 @@ jobs:
       - name: Deploy to S3
         run: aws s3 sync dist/ s3://${{ env.S3_BUCKET }} --delete
 
+      - name: Resolve CloudFront distribution
+        id: cloudfront
+        run: |
+          DISTRIBUTION_ID=$(aws cloudfront list-distributions \
+            --query "DistributionList.Items[?DomainName=='${{ env.CLOUDFRONT_DOMAIN_NAME }}'].Id | [0]" \
+            --output text)
 
+          if [ -z "$DISTRIBUTION_ID" ] || [ "$DISTRIBUTION_ID" = "None" ]; then
+            echo "CloudFront distribution not found for ${{ env.CLOUDFRONT_DOMAIN_NAME }}"
+            exit 1
+          fi
+
+          echo "distribution_id=$DISTRIBUTION_ID" >> "$GITHUB_OUTPUT"
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id "${{ steps.cloudfront.outputs.distribution_id }}" \
+            --paths "/*"
 
       - name: Notify Discord (success)
         if: success()
