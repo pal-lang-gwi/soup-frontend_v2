@@ -267,12 +267,18 @@ const MyPage = () => {
 
       {keywordModal && (
         <div className={styles.modalBackdrop} role="presentation">
-          <div className={styles.modal} role="dialog" aria-modal="true">
-            <div className={styles.modalTitle}>
+          <div
+            className={styles.modal}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="keyword-modal-title"
+            aria-describedby="keyword-modal-message"
+          >
+            <div id="keyword-modal-title" className={styles.modalTitle}>
               {keywordModal.type === 'confirm' ? '구독 취소' : keywordModal.title}
             </div>
 
-            <div className={styles.modalMessage}>
+            <div id="keyword-modal-message" className={styles.modalMessage}>
               {keywordModal.type === 'confirm'
                 ? `'${keywordModal.keyword.keywordInfo.keyword}' 키워드 구독을 취소하시겠습니까?`
                 : keywordModal.message}
