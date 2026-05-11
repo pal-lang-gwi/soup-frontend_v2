@@ -40,10 +40,14 @@ const MailPage = () => {
   }, [keyword, news])
 
   useEffect(() => {
+    let cancelled = false
+
     if (!hasKeywordParam || !hasDateParam || !keyword.trim() || !date.trim()) {
       setLoadState('noParams')
       setNews(null)
-      return
+      return () => {
+        cancelled = true
+      }
     }
 
     const loadNews = async () => {
@@ -61,10 +65,14 @@ const MailPage = () => {
             page,
           })
 
+          if (cancelled) return
+
           allNews.push(...data.newsDtos)
           totalPages = data.totalPages
           page += 1
         }
+
+        if (cancelled) return
 
         const matchedNews = allNews.find((item) => {
           const itemKeyword = item.keywordName ?? item.keyword
@@ -72,9 +80,13 @@ const MailPage = () => {
           return normalizeKeyword(itemKeyword) === normalizeKeyword(keyword)
         })
 
+        if (cancelled) return
+
         setNews(matchedNews ?? null)
         setLoadState(matchedNews ? 'success' : 'empty')
       } catch (error) {
+        if (cancelled) return
+
         console.error('메일 뉴스 상세 조회에 실패했습니다.', error)
         setLoadState('error')
         setNews(null)
@@ -82,6 +94,10 @@ const MailPage = () => {
     }
 
     loadNews()
+
+    return () => {
+      cancelled = true
+    }
   }, [hasKeywordParam, hasDateParam, keyword, date])
 
   return (
