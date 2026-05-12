@@ -1,23 +1,26 @@
 export interface NewsDtos {
     keyword: string;
+    keywordName?: string;
     longSummary: string;
-    createdDate: string;
-    articles: Article[];
+    createdDate: string | number[];
+    articles: MailArticle[];
+    relatedKeywords?: string[];
 }
 
-export interface NewsListResponse{
+export interface NewsListResponseData {
+  newsDtos: NewsDtos[];
+  totalElements: number;
+  totalPages: number;
+  currentPage: number;
+}
+
+export interface NewsListResponse {
     success: boolean;
-    data: {
-        newsDtos: NewsDtos[];
-        totalElements: number;
-        totalPages: number;
-        currentPage: number;
-    }
+    data: NewsListResponseData;
 }
 
-export interface Article {
-  id: number
+export interface MailArticle {
   title: string
   summary: string
-  image: string
+  url?: string
 }

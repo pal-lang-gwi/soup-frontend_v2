@@ -1,7 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { LandingPage } from '@/pages/landing'
 import { HomePage } from '@/pages/home'
-import { NewsPage } from '@/pages/news'
+import { MailPage } from '@/pages/mail'
 import { AdminPage } from '@/pages/admin'
 import { MyPage } from '@/pages/mypage'
 import { useState, useEffect } from 'react'
@@ -32,16 +32,10 @@ const IndexRoute = () => {
 const AppRoutes = () => (
   <Routes>
     <Route path='/' element={<IndexRoute />} />
-    <Route
-      path='/news'
-      element={
-        <NewsPage />
-      }
-    />
+    <Route path='/news' element={<MailPage />} />
 
     {/* 로그인 후 접근 가능 페이지 */}
     <Route path='/home' element={<HomePage />} />
-    <Route path='/news' element={<NewsPage />} />
     <Route path='/mypage' element={<MyPage />} />
     <Route
       path='/admin'
